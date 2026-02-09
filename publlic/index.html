@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Welcome to Wallaby</title>
+  </head>
+
+  <body>
+    <div class="slider-container">
+      <div class="slider" id="slider">
+        <div class="slide">
+          <div class="container">
+            <h1 class="text">Wallaby your personalized health app</h1>
+          </div>
+        </div>
+
+        <div class="slide">
+          <div class="container">
+            <h1 class="text">track your food expiry date easily!</h1>
+          </div>
+        </div>
+
+        <div class="slide">
+          <div class="container">
+            <h1 class="text">use AI to help track calorie intake!</h1>
+          </div>
+          <a href="create.html"
+            ><button class="get-started">get started!</button></a
+          >
+        </div>
+      </div>
+
+      <!-- Arrows -->
+      <button class="arrow left" onclick="prevSlide()">❮</button>
+      <button class="arrow right" onclick="nextSlide()">❯</button>
+
+      <!-- Dots -->
+      <div class="dots">
+        <span class="dot active" onclick="goToSlide(0)"></span>
+        <span class="dot" onclick="goToSlide(1)"></span>
+        <span class="dot" onclick="goToSlide(2)"></span>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,166 @@
+body {
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: linear-gradient(180deg, #E1FF00 75%, #9AAE00 100%);
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;
+  text-align: center;
+  padding-left: 10%;
+  padding-right: 10%;
+  
+}
+
+.text{
+  font-size: clamp(1.5rem, 8vw, 3.5rem); 
+  
+  width: 100%; 
+}
+
+
+/*slideshow styles*/
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  
+  overflow-x: hidden; /* prevents horizontal scrollbar */
+}
+
+/* Slider container hides overflow */
+.slider-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* The slider is a flex row that moves */
+.slider {
+  display: flex;
+  width: 300%; /* 3 slides */
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Each slide takes full viewport width */
+.slide {
+  flex-shrink: 0;
+  width: 100vw;
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.slide .container {
+  text-align: center;
+}
+/* Container inside slide for responsive content */
+.container {
+  max-width: 900px;
+  width: 90%;
+  text-align: center;
+}
+
+.text {
+  font-size: 2rem;
+}
+
+/* Arrows */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+
+
+.left { left: 5%; }
+.right { right: 5%; }
+
+/* Dots */
+.dots {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  margin: 5px;
+  background: #778326;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.dot.active {
+  background: black;
+}
+
+
+.get-started {
+  margin-top: 20px; /* spacing below text */
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  background-color: #ffffff;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: bold;
+}
+
+.slide .get-started:hover {
+  transform: translateX(-50%) scale(1.05);
+  background-color: #f1f0ef;
+}
+
+.slide .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 20px;
+}
+/* Button pinned just above the dots */
+.slide .get-started {
+  position: absolute;
+  bottom: 60px;  /* adjust this to sit just above dots */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
