@@ -153,7 +153,7 @@ body {
 /* Button pinned just above the dots */
 .slide .get-started {
   position: absolute;
-  bottom: 60px;  /* adjust this to sit just above dots */
+  bottom: 60px;  
   left: 50%;
   transform: translateX(-50%);
   padding: 12px 30px;
@@ -164,9 +164,7 @@ body {
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-.login-box{
-  
-}
+
 
 
 
