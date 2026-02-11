@@ -401,6 +401,7 @@ input.error {
   font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   align-items: center;
   margin-bottom: 12px;
+  line-height: 1.1;
   
 }
 
@@ -410,4 +411,41 @@ h5{
   font-family: 'Inter', sans-serif;
   font-weight: 100;
 }
+
+.apple-btn {
+  position: relative;
+}
+
+.apple-btn .fa-apple {
+  position: absolute;
+  left: 24px;          /* adjust horizontally */
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.7rem;
+  text-shadow: none;
+}
+
+.confirm-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 17px;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  cursor: pointer;
+  background-color: white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.6);
+  transition: 
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+  
+}
+
+.confirm-btn:hover {
+  box-shadow: 
+    0 12px 28px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+} 
 
