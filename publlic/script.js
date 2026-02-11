@@ -56,43 +56,5 @@ function goToSlide(index) {
 // Initial state
 updateSlider();
 
-// check script is connected
-console.log("script loaded");
-
-const passwordInput = document.getElementById("password");
-const toggle = document.getElementById("togglePassword");
-const form = document.querySelector("form");
-
-// show / hide password
-toggle.addEventListener("click", () => {
-  const type =
-    passwordInput.getAttribute("type") === "password"
-      ? "text"
-      : "password";
-
-  passwordInput.setAttribute("type", type);
-  toggle.classList.toggle("fa-eye");
-  toggle.classList.toggle("fa-eye-slash");
-});
-
-// fake validation
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const password = passwordInput.value;
-
-  // fake rule for now
-  if (password !== "123456") {
-    passwordInput.classList.add("error");
-  } else {
-    passwordInput.classList.remove("error");
-    alert("Login success (mock)");
-  }
-});
-
-// remove red when typing again
-passwordInput.addEventListener("input", () => {
-  passwordInput.classList.remove("error");
-});
 
 

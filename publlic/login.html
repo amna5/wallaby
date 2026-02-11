@@ -39,7 +39,12 @@
               id="password"
               required
             />
-            <i class="fa-solid fa-eye-slash" id="togglePassword"></i>
+            <img
+              src="../img/eye-closed.png"
+              id="togglePassword"
+              class="eye-icon"
+              alt="toggle password"
+            />
           </div>
 
           <div class="row">
@@ -69,14 +74,13 @@
       const toggle = document.getElementById("togglePassword");
 
       toggle.addEventListener("click", () => {
-        const type =
-          passwordInput.getAttribute("type") === "password"
-            ? "text"
-            : "password";
-
-        passwordInput.setAttribute("type", type);
-        toggle.classList.toggle("fa-eye");
-        toggle.classList.toggle("fa-eye-slash");
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          toggle.src = "../img/eye-open.png";
+        } else {
+          passwordInput.type = "password";
+          toggle.src = "../img/eye-closed.png";
+        }
       });
       const form = document.querySelector("form");
 
@@ -86,6 +90,7 @@
         const password = passwordInput.value;
 
         // Fake rule for now
+        // Replace with real authentication later
         if (password !== "123456") {
           passwordInput.classList.add("error");
         } else {

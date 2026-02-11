@@ -17,12 +17,10 @@ body {
   text-align: center;
   padding-left: 10%;
   padding-right: 10%;
-  
 }
 
 .text{
   font-size: clamp(1.5rem, 8vw, 3.5rem); 
-  
   width: 100%; 
 }
 
@@ -36,7 +34,6 @@ body {
 }
 
 body {
-  
   overflow-x: hidden; /* prevents horizontal scrollbar */
 }
 
@@ -94,8 +91,6 @@ body {
   cursor: pointer;
   transition: opacity 0.3s ease;
 }
-
-
 
 .left { left: 5%; }
 .right { right: 5%; }
@@ -196,8 +191,6 @@ input {
   font-size: 1rem;
   background-color: #def057;
   color: black;
-  
-  
 }
 
 .row {
@@ -281,8 +274,6 @@ input {
   text-decoration: none;
   color: black;
   font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  
-  
 }
 
 .signup a:hover {
@@ -325,19 +316,26 @@ input:-webkit-autofill:focus {
   width: 100%;
 }
 
-.password-field i {
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  transform: translateY(-75%);
-  cursor: pointer;
-  color: #333;
-  font-size: 1.1rem;
+.password-field input {
+  padding-right: 48px;
 }
+
+.eye-icon {
+  position: absolute;
+  right: 15px;
+  top:45%;
+  transform: translateY(-55%);
+  width: 30px;   /* control size */
+  height: 30px;
+  cursor: pointer;
+  
+  
+}
+
+
 
 input.error {
   border: 3px solid #DF6767;
-  
 }
 
 
