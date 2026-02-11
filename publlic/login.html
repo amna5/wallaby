@@ -13,6 +13,12 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="login-wrapper">
@@ -23,14 +29,20 @@
         <input type="password" placeholder="password" />
 
         <div class="row">
-          <a href="#" class="forgot">forgot password?</a>
+          <a href="forgotPassword.html" class="forgot">forgot password?</a>
           <div class="social">
             <button class="icon"><i class="fa-brands fa-apple"></i></button>
-            <button class="icon"><i class="fa-brands fa-google"></i></button>
+            <button class="icon">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+                class="google-logo"
+              />
+            </button>
           </div>
         </div>
 
         <button class="login-btn">log in</button>
+        <hr class="divider" />
 
         <p class="signup">do not have an account? <a href="#">sign up</a></p>
       </div>

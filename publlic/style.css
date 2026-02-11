@@ -135,6 +135,7 @@ body {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: bold;
+ 
 }
 
 .slide .get-started:hover {
@@ -193,9 +194,11 @@ input {
   padding: 14px 18px;
   margin-bottom: 12px;
   border-radius: 999px;
-  border: 2px solid #666;
+  border: 3px solid #879900;
   outline: none;
   font-size: 1rem;
+  background-color: #def057;
+  color: #7d7f64;
 }
 
 .row {
@@ -209,6 +212,11 @@ input {
   font-size: 0.8rem;
   text-decoration: none;
   color: black;
+  font-weight: bold;
+}
+
+.forgot:hover {
+  text-decoration: underline;
 }
 
 .social {
@@ -217,9 +225,9 @@ input {
 }
 
 .icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 16%;
+  width: 48px;
+  height: 48px;
+  border-radius: 33%;
   border: none;
   background: white;
   font-size: 16px;
@@ -227,7 +235,16 @@ input {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.6);
+  transition: 
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
+
+.icon:hover {
+  box-shadow: 
+    0 12px 28px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);}
 
 
 .login-btn {
@@ -238,17 +255,37 @@ input {
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
+  background-color: white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.6);
+  transition: 
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+  
 }
 
+.login-btn:hover {
+  box-shadow: 
+    0 12px 28px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
 .signup {
-  text-align: center;
+  text-align: left;
   font-size: 0.8rem;
   margin-top: 10px;
+  font-family: 'Inter', sans-serif;
 }
 
 .signup a {
   font-weight: bold;
   text-decoration: none;
+  color: black;
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  
+  
+}
+
+.signup a:hover {
+  text-decoration: underline;
 }
 
 .log-in{
@@ -257,20 +294,23 @@ input {
   
 }
 .fa-apple {
-  font-size: 20px;
+  font-size: 32px;
 }
 
-.fa-google {
-  background: conic-gradient(
-    #4285F4 0deg 90deg,
-    #34A853 90deg 180deg,
-    #FBBC05 180deg 270deg,
-    #EA4335 270deg 360deg
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
+.google-logo {
+  width: 32px;
+  height: 32px;
 }
+
+.divider {
+  border: none;
+  height: 0.5px;
+  background: black;
+  width: 100%;
+  margin: 10px auto;
+  opacity: 0.8;
+}
+
 
 
 
