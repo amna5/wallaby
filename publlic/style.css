@@ -174,9 +174,6 @@ body {
   padding: 0;
 }
 
-
-
-
 .login-card {
   width: 90%;
   max-width: 350px;
@@ -198,7 +195,9 @@ input {
   outline: none;
   font-size: 1rem;
   background-color: #def057;
-  color: #7d7f64;
+  color: black;
+  
+  
 }
 
 .row {
@@ -254,6 +253,8 @@ input {
   border: none;
   font-size: 1.1rem;
   font-weight: bold;
+    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
   cursor: pointer;
   background-color: white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.6);
@@ -311,6 +312,33 @@ input {
   opacity: 0.8;
 }
 
+/* avoid changing styles when autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #def057 inset !important;
+  -webkit-text-fill-color: black !important;
+}
+
+.password-field {
+  position: relative;
+  width: 100%;
+}
+
+.password-field i {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-75%);
+  cursor: pointer;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+input.error {
+  border: 3px solid #DF6767;
+  
+}
 
 
 
