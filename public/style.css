@@ -161,7 +161,7 @@ body {
 }
 
 
-.login-wrapper {
+.button-wrapper {
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -169,7 +169,7 @@ body {
   padding: 0;
 }
 
-.login-card {
+.button-card {
   width: 90%;
   max-width: 350px;
   background: transparent;
@@ -178,7 +178,7 @@ body {
 
 h1 {
   font-size: 2.5rem;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 input {
@@ -239,12 +239,12 @@ input {
   transform: translateY(-2px);}
 
 
-.login-btn {
+.button-btn {
   width: 100%;
   padding: 14px;
   border-radius: 999px;
   border: none;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   font-weight: bold;
     font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
@@ -257,7 +257,7 @@ input {
   
 }
 
-.login-btn:hover {
+.button-btn:hover {
   box-shadow: 
     0 12px 28px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
@@ -280,7 +280,7 @@ input {
   text-decoration: underline;
 }
 
-.log-in{
+.title{
   text-align: left;
   font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   
@@ -328,16 +328,86 @@ input:-webkit-autofill:focus {
   width: 30px;   /* control size */
   height: 30px;
   cursor: pointer;
-  
-  
 }
-
-
 
 input.error {
   border: 3px solid #DF6767;
 }
 
+.login {
+  text-align: left;
+  font-size: 0.8rem;
+  margin-top: 10px;
+  margin-left: 20px;
+  font-family: 'Inter', sans-serif;
+}
 
+.login a {
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
 
+.login a:hover {
+  text-decoration: underline;
+}
+
+.create-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.create-card {
+  width: 90%;
+  max-width: 300px;
+  background: transparent;
+  text-align: center;
+}
+
+.create-btn {
+  width: 100%;
+  padding: 14px;
+  margin: 8px;
+  border-radius: 999px;
+  border: none;
+  font-size: 1.2rem;
+  
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0px 4px 3px rgba(0, 0, 0, 0.18);
+
+  cursor: pointer;
+  background-color: white;
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.3);
+  transition: 
+    transform 0.25s ease,
+    box-shadow 0.25s ease; 
+}
+
+.create-btn:hover {
+  box-shadow: 
+    0 12px 28px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);}
+
+#last-create{
+  background-color: #969696;
+}
+
+.title-create{
+  text-align: center;
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  align-items: center;
+  margin-bottom: 12px;
+  
+}
+
+h5{
+  font-size: 1rem;
+  margin-bottom: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 100;
+}
 
