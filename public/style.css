@@ -467,6 +467,8 @@ h5{
   font-weight: bold;
   background: #eee;
   outline: none;
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.3);
+
 }
 
 .otp.error {
