@@ -449,3 +449,40 @@ h5{
   transform: translateY(-2px);
 } 
 
+/* verification */
+.otp-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.otp {
+  width: 55px;
+  height: 55px;
+  border-radius: 12px;
+  border: 2px solid #777;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: #eee;
+  outline: none;
+}
+
+.otp.error {
+  border: 2px solid #DF6767;
+  background: #ffe5e5;
+}
+
+.resend-link {
+  font-weight: 700; /* bold */
+  text-decoration: none; /* remove default underline */
+  color: inherit; /* keeps the text color same as surrounding text */
+  transition: all 0.2s ease;
+}
+
+.resend-link:hover {
+  text-decoration: underline; /* underline on hover */
+}
+
+
