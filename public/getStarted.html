@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Get started</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="onboard-wrapper">
+      <div class="onboard-card">
+        <h1>get started</h1>
+        <p style="margin-bottom: 60px">
+          we need some basic information<br />to get you started!
+        </p>
+        <!-- Gender selector -->
+        <div class="gender-wrapper">
+          <div class="gender" data-value="male">
+            <img src="../img/male_icon.svg" alt="male" class="male" />
+            <span>male</span>
+          </div>
+          <div class="gender" data-value="female">
+            <img src="../img/female_icon.svg" alt="female" class="female" />
+            <span>female</span>
+          </div>
+        </div>
+
+        <!-- Inputs -->
+        <div class="pill">
+          <input
+            type="text"
+            id="name"
+            placeholder="Name"
+            style="padding-left: 0"
+          />
+        </div>
+        <div class="pill">
+          <input type="number" id="height" /><span>cm</span>
+        </div>
+        <div class="pill">
+          <input type="number" id="weight" /><span>kg</span>
+        </div>
+        <div class="pill">
+          <input type="number" id="age" style="padding-left: 50px" /><span
+            >age</span
+          >
+        </div>
+        <div style="padding-top: 30px">
+          <button id="nextBtn" class="next-btn disabled">next</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let gender = null;
+
+      const genders = document.querySelectorAll(".gender");
+      const nextBtn = document.getElementById("nextBtn");
+
+      const nameInput = document.getElementById("name");
+      const height = document.getElementById("height");
+      const weight = document.getElementById("weight");
+      const age = document.getElementById("age");
+
+      // gender click
+      genders.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          genders.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          gender = btn.dataset.value;
+          validate();
+        });
+      });
+
+      // input typing
+      document.querySelectorAll("input").forEach((i) => {
+        i.addEventListener("input", validate);
+      });
+
+      function validate() {
+        if (
+          gender &&
+          nameInput.value &&
+          height.value &&
+          weight.value &&
+          age.value
+        ) {
+          nextBtn.classList.remove("disabled");
+        } else {
+          nextBtn.classList.add("disabled");
+        }
+      }
+
+      nextBtn.addEventListener("click", () => {
+        if (nextBtn.classList.contains("disabled")) return;
+
+        localStorage.setItem(
+          "onboard1",
+          JSON.stringify({
+            gender,
+            name: nameInput.value,
+            height: height.value,
+            weight: weight.value,
+            age: age.value,
+          }),
+        );
+
+        window.location.href = "dashboard.html";
+      });
+    </script>
+  </body>
+</html>
