@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="inside.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Home</title>
+  </head>
+  <body>
+    <div class="app">
+      <main class="dashboard">
+        <h1>Home</h1>
+
+        <div class="grid">
+          <div class="card calories">
+            <h3>calorie intake</h3>
+            <p class="big">2004 <span>kcal</span></p>
+          </div>
+
+          <div class="card weight">
+            <h3>weight</h3>
+            <p class="big">40 <span>kg</span></p>
+            <small>-5% weight</small>
+          </div>
+
+          <div class="card notes">
+            <div class="notes-header">
+              <h3>your notes</h3>
+              <div class="notes-actions">
+                <button class="add">
+                  <img src="../img/plus.svg" alt="Add" class="icon-plus" />
+                  <img
+                    src="../img/sparkle.svg"
+                    alt="Sparkle"
+                    class="icon-sparkle"
+                  />
+                </button>
+                <button class="view-all">view all</button>
+              </div>
+            </div>
+
+            <div class="note">
+              <strong>30-3-2024</strong>
+              <p>push day</p>
+            </div>
+
+            <div class="note">
+              <strong>29-3-2024</strong>
+              <p>pull day<br />bicep curls x10 3 sets</p>
+            </div>
+          </div>
+
+          <div class="card logfood">
+            <h3>log your food</h3>
+            <input placeholder="search for food..." />
+          </div>
+          <div class="card ranking">
+            <h3>ranking</h3>
+            <p class="big">#67</p>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div class="floating-nav">
+      <button class="nav-btn active">
+        <a href="home.html"><img src="../img/home_button.svg" alt="Home" /></a>
+      </button>
+
+      <button class="nav-btn">
+        <a href="scanner.html"><img src="../img/scan.svg" alt="Scan" /></a>
+      </button>
+
+      <button class="nav-btn">
+        <a href=""><img src="../img/people.svg" alt="Users" /></a>
+      </button>
+    </div>
+  </body>
+</html>

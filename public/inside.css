@@ -1,0 +1,312 @@
+body {
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: black;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow-x: hidden;}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: black;
+  color: white;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  max-width: 1400px;
+  margin: auto;
+}
+
+/* Main */
+.dashboard {
+  flex: 1;
+  padding: 30px;
+}
+.adjust {
+  flex: 1;
+  padding: 30px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* Cards */
+.card {
+  background: #E1FF00;
+  color: black;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.big {
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.big span {
+  font-size: 16px;
+}
+
+.calories {
+  grid-column: 1 / 2; /* spans 2 columns */
+}
+
+.weight {
+  grid-column: 2 / 5; /* spans 2 columns */
+}
+
+.notes {
+  grid-column: 1 / 5; /* full width */
+  height: 35vh;
+  overflow-y: auto;
+}
+
+.logfood {
+  grid-column: 1 / 3; /* under notes, left */
+}
+
+.ranking {
+  grid-column: 3 / 5; /* under notes, right */
+}
+
+
+/* Notes */
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.note {
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+/* Log food */
+.logfood input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+}
+
+.nav-btn {
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.nav-btn:hover {
+  background: #eee;
+}
+.nav-btn:active {
+  background: #ddd;
+}
+
+h3 {
+  font-weight: 800;
+}
+
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.notes-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.add{
+  position: relative;
+  background: white;
+  border: none;
+  border-radius: 12px;
+  padding: 15px 15px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.add .icon-plus {
+  width: 24px;
+  height: 24px;
+}
+
+.add .icon-sparkle {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.view-all {
+  background: transparent;
+  border: 2px solid black;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Only for the notes section */
+.notes {
+  grid-column: 1 / 5;
+  height: 35vh;
+  overflow-y: auto;
+  padding-right: 12px; /* prevent content hiding behind scrollbar */
+  padding-left: 19px;
+}
+
+/* Chrome, Edge, Safari */
+.notes::-webkit-scrollbar {
+  width: 6px; /* slim scrollbar */
+}
+
+.notes::-webkit-scrollbar-track {
+  background: transparent; /* no background */
+}
+
+.notes::-webkit-scrollbar-thumb {
+  background-color: black; /* black scrollbar */
+  border-radius: 3px; /* rounded edges */
+}
+
+.notes::-webkit-scrollbar-button {
+  display: none; /* remove up/down arrows */
+}
+
+/* Firefox */
+.notes {
+  scrollbar-width: thin; /* slim */
+  scrollbar-color: black transparent; /* thumb color, track color */
+}
+
+
+
+/* Floating nav */
+.floating-nav {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  padding: 12px 28px;
+  background: #b59bd3;
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.nav-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.25s ease;
+}
+
+.nav-btn img {
+  width: 22px;
+  height: 22px;
+}
+
+.nav-btn.active {
+  background: white;
+}
+
+.nav-btn:hover {
+  transform: scale(1.1);
+}
+.nav-btn {
+  text-decoration: none;
+  color: inherit;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.header img {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+/* Camera container - controls the frame size */
+.camera-container {
+  width: 100%;
+  max-width: 900px;  /* Adjust this to change max width */
+  height: auto;
+  margin: 20px auto;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #1a1a1a;
+  aspect-ratio: 16/9;  /* Controls the shape (16:9 is widescreen) */
+}
+
+/* Video element - fills the container */
+#camera-feed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* cover = fills container, may crop */
+  /* object-fit: contain;  /* contain = shows full image, may have black bars */
+  display: block;
+}
+
+.scan-desc {
+  font-weight: 100;
+  text-align: center;
+  color: #868686;
+  
+}
+
+.header {
+  margin-bottom: 2px;
+}
+
+.scan-desc {
+  margin-top: 0;
+  margin-bottom: 8px;  /* Adjust this to control gap between text and camera */
+}
+
+.camera-container {
+  margin-top: 0;  /* Remove any top margin */
+}

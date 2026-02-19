@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scan</title>
+    <link rel="stylesheet" href="inside.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <div class="adjust">
+        <div class="header">
+          <img src="../img/arrow.svg" alt="arrow" id="backArrow" />
+          <h1>Scan</h1>
+        </div>
+        <h3 class="scan-desc">scan barcode or food</h3>
+        <div class="camera-container">
+          <video id="camera-feed" autoplay playsinline></video>
+        </div>
+        <div class="floating-nav">
+          <button class="nav-btn">
+            <a href="home.html"
+              ><img src="../img/home_button.svg" alt="Home"
+            /></a>
+          </button>
+
+          <button class="nav-btn active">
+            <a href="scanner.html"><img src="../img/scan.svg" alt="Scan" /></a>
+          </button>
+
+          <button class="nav-btn">
+            <a href=""><img src="../img/people.svg" alt="Users" /></a>
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>
+      document
+        .getElementById("backArrow")
+        .addEventListener("click", function () {
+          // Check if there's a previous page in history
+          if (document.referrer && document.referrer !== "") {
+            // If there's a referrer (previous page), go back
+            window.history.back();
+          } else {
+            // If no previous page, go to home
+            window.location.href = "home.html";
+          }
+        });
+
+      const video = document.getElementById("camera-feed");
+
+      async function startCamera() {
+        try {
+          // Request camera access
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true, // Enable video
+            audio: false, // Audio not needed for scan page
+          });
+
+          // Connect the camera stream to your video element
+          video.srcObject = stream;
+        } catch (error) {
+          console.error("Camera error:", error);
+          alert("Please allow camera access when prompted");
+        }
+      }
+
+      // Start the camera when page loads
+      startCamera();
+
+      function stopCamera() {
+        const stream = video.srcObject;
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+          video.srcObject = null;
+        }
+      }
+    </script>
+  </body>
+</html>
