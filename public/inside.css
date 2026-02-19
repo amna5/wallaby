@@ -310,3 +310,259 @@ html {
 .camera-container {
   margin-top: 0;  /* Remove any top margin */
 }
+
+/* =====================
+         OVERLAY BACKDROP
+      ===================== */
+      .overlay-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 100;
+        backdrop-filter: blur(4px);
+      }
+
+      .overlay-backdrop.active {
+        display: block;
+      }
+
+      /* =====================
+         BOTTOM SHEET BASE
+      ===================== */
+      .bottom-sheet {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%) translateY(100%);
+        width: 920px;
+        background: #1c1c1e;
+        border-radius: 28px 28px 0 0;
+        z-index: 200;
+        transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        padding-bottom: 32px;
+      }
+
+      .bottom-sheet.open {
+        transform: translateX(-50%) translateY(0%);
+      }
+
+      /* Drag handle */
+      .sheet-handle {
+        width: 70px;
+        height: 8px;
+        background: #ffffff;
+        border-radius: 99px;
+        margin: 8px auto 20px;
+      }
+
+      /* =====================
+         FOOD INFO POPUP (Roti Canai style)
+      ===================== */
+      #food-popup .sheet-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 24px;
+        padding: 0 24px;
+      }
+
+      #food-popup .sheet-title h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+        color: white;
+      }
+
+      #food-popup .edit-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        color: #aaa;
+        display: flex;
+        align-items: center;
+      }
+
+      #food-popup .edit-btn:hover {
+        color: white;
+      }
+
+      #food-popup .edit-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Nutrient rows */
+      .nutrient-list {
+        padding: 0 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 600px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .nutrient-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
+      }
+
+      .nutrient-row label {
+        font-size: 15px;
+        color: #ccc;
+        font-weight: 600;
+        width: 100px;
+      }
+
+      .nutrient-row input {
+        background: #2c2c2e;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: 'Montserrat', sans-serif;
+        padding: 7px 14px;
+        width: 90px;
+        text-align: center;
+        outline: none;
+        transition: background 0.2s;
+      }
+
+      .nutrient-row input:focus {
+        background: #3a3a3c;
+      }
+
+      /* Read-only by default */
+      .nutrient-row input[readonly] {
+        cursor: default;
+        pointer-events: none;
+      }
+
+      /* Sheet action buttons */
+      .sheet-actions {
+        display: flex;
+        gap: 12px;
+        padding: 24px 24px 0;
+        justify-content: center;
+      }
+
+      .sheet-btn {
+        
+        width: 160px;
+        padding: 16px;
+        border-radius: 16px;
+        font-size: 16px;
+        font-weight: 800;
+        font-family: 'Montserrat', sans-serif;
+        cursor: pointer;
+        border: none;
+        transition: opacity 0.2s, transform 0.15s;
+      }
+
+      .sheet-btn:hover {
+        opacity: 0.88;
+        transform: scale(0.98);
+      }
+
+      .btn-cancel {
+        background: #2c2c2e;
+        color: white;
+      }
+
+      .btn-add {
+        background: #e8e8e8;
+        color: black;
+      }
+
+      /* =====================
+         BARCODE POPUP (Heinz Beans style)
+      ===================== */
+      #barcode-popup .sheet-title {
+        text-align: center;
+        padding: 0 24px;
+        margin-bottom: 20px;
+      }
+
+      #barcode-popup .sheet-title h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+        color: white;
+      }
+
+      #barcode-popup .product-image-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 12px 24px 0;
+        min-height: 160px;
+      }
+
+      #barcode-popup .product-image-wrap img {
+        max-height: 160px;
+        max-width: 200px;
+        object-fit: contain;
+        border-radius: 12px;
+      }
+
+      /* Placeholder when no image */
+      #barcode-popup .product-image-wrap .no-image {
+        width: 160px;
+        height: 160px;
+        background: #2c2c2e;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #555;
+        font-size: 14px;
+      }
+
+      /* =====================
+         DEMO BUTTONS (remove in production)
+      ===================== */
+      .demo-controls {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 50;
+      }
+
+      .demo-btn {
+        padding: 10px 18px;
+        background: #E1FF00;
+        color: black;
+        border: none;
+        border-radius: 12px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+      }
+
+      .demo-btn:hover {
+        background: #cbeb00;
+      }
+
+      .nutrient-row input {
+  text-align: center;
+}
+
+.nutrient-row input::-webkit-outer-spin-button,
+.nutrient-row input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.nutrient-row input[type=number] {
+  -moz-appearance: textfield;
+}
