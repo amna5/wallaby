@@ -38,7 +38,7 @@ body {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1fr 1.8fr 1.8fr;
   gap: 20px;
 }
 
@@ -47,38 +47,57 @@ body {
   background: #E1FF00;
   color: black;
   border-radius: 20px;
-  padding: 20px;
+  padding: 10px;
+  padding-left: 30px;
+  
+  
+}
+/***
+.calories, .weight {
+  align-self: start;
+}***/
+.big {
+  font-size: 47px;
+  font-weight:700;
+  
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-.big {
-  font-size: 32px;
-  font-weight: 800;
-}
 
 .big span {
-  font-size: 16px;
+  font-size: 20px;
+ font-feature-settings: "ss01";
+ font-weight: 700;
 }
 
 .calories {
-  grid-column: 1 / 2; /* spans 2 columns */
+  grid-column: 1 / 3; /* spans 2 columns */
 }
 
 .weight {
-  grid-column: 2 / 5; /* spans 2 columns */
+  grid-column: 3 / 5; /* spans 2 columns */
 }
 
 .notes {
   grid-column: 1 / 5; /* full width */
-  height: 35vh;
-  overflow-y: auto;
+  height: 45vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  
 }
 
-.logfood {
-  grid-column: 1 / 3; /* under notes, left */
+
+.weight {
+  position: relative;
 }
 
-.ranking {
-  grid-column: 3 / 5; /* under notes, right */
+.calories {
+  padding-bottom: 0px;
+}
+
+.weight {
+  padding-bottom: 0px;
 }
 
 
@@ -90,19 +109,16 @@ body {
 }
 
 .note {
-  background: white;
-  padding: 12px;
-  border-radius: 12px;
-  margin-top: 10px;
+  background: #EEEEEE;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-top: 6px;
+  color: black;
+  font-weight: 700;
+  font-size: 23px;
 }
 
-/* Log food */
-.logfood input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 12px;
-  border: none;
-}
+
 
 .nav-btn {
   border: none;
@@ -121,7 +137,9 @@ body {
 }
 
 h3 {
-  font-weight: 800;
+  font-weight: 900;
+  font-size: 23px;
+  
 }
 
 .notes-header {
@@ -138,14 +156,23 @@ h3 {
 }
 
 .add{
-  position: relative;
+  
+  
   background: white;
   border: none;
   border-radius: 12px;
-  padding: 15px 15px;
+  padding: 22px 15px;
   display: flex;
   align-items: center;
   cursor: pointer;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  
+}
+
+.add:hover {
+  transform:scale(1.05);
+  background-color: #f1f0ef;
 }
 
 .add .icon-plus {
@@ -153,13 +180,7 @@ h3 {
   height: 24px;
 }
 
-.add .icon-sparkle {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  top: 4px;
-  right: 4px;
-}
+
 
 .view-all {
   background: transparent;
@@ -168,41 +189,14 @@ h3 {
   padding: 6px 12px;
   font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+  font-size: 18px;
 }
-
-/* Only for the notes section */
-.notes {
-  grid-column: 1 / 5;
-  height: 35vh;
-  overflow-y: auto;
-  padding-right: 12px; /* prevent content hiding behind scrollbar */
-  padding-left: 19px;
+.view-all:hover {
+  transform: scale(1.05);
+  
 }
-
-/* Chrome, Edge, Safari */
-.notes::-webkit-scrollbar {
-  width: 6px; /* slim scrollbar */
-}
-
-.notes::-webkit-scrollbar-track {
-  background: transparent; /* no background */
-}
-
-.notes::-webkit-scrollbar-thumb {
-  background-color: black; /* black scrollbar */
-  border-radius: 3px; /* rounded edges */
-}
-
-.notes::-webkit-scrollbar-button {
-  display: none; /* remove up/down arrows */
-}
-
-/* Firefox */
-.notes {
-  scrollbar-width: thin; /* slim */
-  scrollbar-color: black transparent; /* thumb color, track color */
-}
-
 
 
 /* Floating nav */
@@ -565,4 +559,55 @@ html {
 
 .nutrient-row input[type=number] {
   -moz-appearance: textfield;
+}
+
+
+.calories {
+  padding-bottom: 20px;
+}
+
+.weight {
+  padding-bottom: 20px;
+}
+
+.list-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.list {
+  flex: 1;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scrollbar {
+  width: 6px;
+  background: transparent;
+  border-radius: 3px;
+  position: relative;
+  height: 100%;
+}
+
+.custom-thumb {
+  width: 6px;
+  background: black;
+  border-radius: 3px;
+  position: absolute;
+  top: 0;
+}
+
+.empty-msg {
+  color: #2C2C2C;
+  font-weight: 700;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 60px;
 }

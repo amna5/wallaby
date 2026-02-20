@@ -18,49 +18,120 @@
         <div class="grid">
           <div class="card calories">
             <h3>calorie intake</h3>
-            <p class="big">2004 <span>kcal</span></p>
+            <!-- replace with real data -->
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-top: 8px;
+              "
+            >
+              <svg
+                width="150"
+                height="150"
+                viewBox="0 0 100 100"
+                xmlns="http://www.w3.org"
+              >
+                <!-- Background circle (White half) -->
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="15"
+                />
+
+                <!-- Foreground circle (Black half at 50%) -->
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="none"
+                  stroke="black"
+                  stroke-width="15"
+                  stroke-dasharray="125.6 125.6"
+                  transform="rotate(-90 50 50)"
+                />
+
+                <!-- Central Text -->
+                <text
+                  x="50"
+                  y="55"
+                  font-family="Montserrat, sans-serif"
+                  font-size="18px"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  50%
+                </text>
+              </svg>
+              <p
+                style="
+                  margin: 0;
+                  font-size: 28px;
+                  font-weight: 700;
+                  line-height: 1.4;
+                  text-align: center;
+                  padding-left: 9px;
+                "
+              >
+                1000/<br />2000 kcal
+              </p>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-top: 8px;
+              "
+            ></div>
           </div>
 
           <div class="card weight">
             <h3>weight</h3>
-            <p class="big">40 <span>kg</span></p>
-            <small>-5% weight</small>
+            <small
+              id="weight-change"
+              style="
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-weight: 700;
+                font-size: 18px;
+              "
+              >-5% weight</small
+            >
+            <img
+              src="../img/weight-chart.svg"
+              style="width: 100%; max-height: 70px; margin-top: 0"
+            />
+            <p class="big" style="margin-top: 4px; margin-bottom: 0">
+              40 <span>kg</span>
+            </p>
           </div>
 
           <div class="card notes">
             <div class="notes-header">
-              <h3>your notes</h3>
+              <h3 style="font-weight: 200">inventory</h3>
               <div class="notes-actions">
                 <button class="add">
                   <img src="../img/plus.svg" alt="Add" class="icon-plus" />
-                  <img
-                    src="../img/sparkle.svg"
-                    alt="Sparkle"
-                    class="icon-sparkle"
-                  />
                 </button>
                 <button class="view-all">view all</button>
               </div>
             </div>
-
-            <div class="note">
-              <strong>30-3-2024</strong>
-              <p>push day</p>
+            <div class="list-wrapper">
+              <div class="list" id="inventoryList">
+                <div class="note">heinz beans 500g</div>
+                <div class="note">milo 1kg</div>
+              </div>
+              <div class="custom-scrollbar">
+                <div class="custom-thumb" id="scrollThumb"></div>
+              </div>
             </div>
-
-            <div class="note">
-              <strong>29-3-2024</strong>
-              <p>pull day<br />bicep curls x10 3 sets</p>
-            </div>
-          </div>
-
-          <div class="card logfood">
-            <h3>log your food</h3>
-            <input placeholder="search for food..." />
-          </div>
-          <div class="card ranking">
-            <h3>ranking</h3>
-            <p class="big">#67</p>
           </div>
         </div>
       </main>
@@ -78,5 +149,54 @@
         <a href=""><img src="../img/people.svg" alt="Users" /></a>
       </button>
     </div>
+    <script>
+      function updateScrollbar() {
+        const list = document.getElementById("inventoryList");
+        const thumb = document.getElementById("scrollThumb");
+
+        const ratio =
+          list.scrollHeight > list.clientHeight
+            ? list.clientHeight / list.scrollHeight
+            : 1;
+
+        const thumbHeight = ratio * list.clientHeight;
+        thumb.style.height = thumbHeight + "px";
+
+        if (list.scrollHeight > list.clientHeight) {
+          const scrollRatio =
+            list.scrollTop / (list.scrollHeight - list.clientHeight);
+          const maxTop = list.clientHeight - thumbHeight;
+          thumb.style.top = scrollRatio * maxTop + "px";
+        } else {
+          thumb.style.top = "0px";
+        }
+      }
+      const list = document.getElementById("inventoryList");
+      const thumb = document.getElementById("scrollThumb");
+
+      list.addEventListener("scroll", updateScrollbar);
+      window.addEventListener("resize", updateScrollbar);
+      updateScrollbar();
+
+      function checkEmpty() {
+        const list = document.getElementById("inventoryList");
+        const notes = list.querySelectorAll(".note");
+
+        let empty = list.querySelector(".empty-msg");
+
+        if (notes.length === 0) {
+          if (!empty) {
+            const msg = document.createElement("p");
+            msg.className = "empty-msg";
+            msg.textContent = "nothing in inventory...";
+            list.appendChild(msg);
+          }
+        } else {
+          if (empty) empty.remove();
+        }
+      }
+
+      checkEmpty();
+    </script>
   </body>
 </html>
