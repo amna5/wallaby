@@ -13,9 +13,26 @@
   <body>
     <div class="app">
       <main class="dashboard">
-        <h1>Home</h1>
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <h1 style="margin: 0">Home</h1>
+          <div class="profile-wrapper">
+            <button class="profile-btn">
+              <img src="../img/profile_logo.svg" alt="Profile" />
+            </button>
+            <a href="settings.html" class="settings-chip">
+              <img src="../img/settings.svg" alt="Settings" />
+              settings
+            </a>
+          </div>
+        </div>
 
-        <div class="grid">
+        <div class="grid" style="margin-top: 30px">
           <div class="card calories">
             <h3>calorie intake</h3>
             <!-- replace with real data -->

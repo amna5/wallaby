@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings</title>
+    <link rel="stylesheet" href="inside.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <div class="adjust">
+        <div class="header">
+          <img src="../img/arrow.svg" alt="arrow" id="backArrow" />
+          <h1>Settings</h1>
+        </div>
+
+        <!-- Health Settings Card -->
+        <div class="settings-card">
+          <!-- Health Settings header -->
+          <div class="settings-card-header" onclick="toggleHealthSettings()">
+            <span>Health Settings</span>
+            <i
+              class="fa fa-chevron-right"
+              id="healthArrow"
+              style="color: white"
+            ></i>
+          </div>
+
+          <div class="settings-card-body" id="healthBody">
+            <p class="settings-label">illnesses</p>
+            <div class="illness-list" id="illnessList"></div>
+            <div class="add-illness-btn" onclick="openIllnessModal()">
+              <div class="plus-circle">+</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Log Out Card -->
+        <div class="settings-card settings-card-row" onclick="handleLogout()">
+          <!-- Log Out -->
+          <div class="settings-card-header">
+            <div style="display: flex; align-items: center; gap: 10px">
+              <img
+                src="../img/logout.svg"
+                alt="logout"
+                style="width: 25px; height: 25px; filter: invert(1)"
+              />
+              <span>Log Out</span>
+            </div>
+            <i class="fa fa-chevron-right" style="color: white"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Illness Modal -->
+    <div class="" id="illnessBackdrop" onclick="closeIllnessModal()"></div>
+    <div class="illness-modal" id="illnessSheet">
+      <p
+        style="
+          text-align: center;
+          font-weight: 800;
+          font-size: 18px;
+          margin: 0 0 16px;
+          color: white;
+        "
+      >
+        illness
+      </p>
+      <div class="illness-search-wrap">
+        <i class="fa fa-search" style="color: #888; font-size: 14px"></i>
+        <input
+          type="text"
+          id="illnessSearch"
+          placeholder="Search"
+          oninput="filterIllnesses()"
+        />
+      </div>
+      <div class="illness-options" id="illnessOptions">
+        <div class="illness-option" onclick="selectIllness('Type 1 Diabetes')">
+          Type 1 Diabetes
+        </div>
+        <div class="illness-option" onclick="selectIllness('Type 2 Diabetes')">
+          Type 2 Diabetes
+        </div>
+        <div class="illness-option" onclick="selectIllness('Hypertension')">
+          Hypertension
+        </div>
+      </div>
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          margin-top: 150px;
+        "
+      >
+        <button
+          class="sheet-btn btn-add"
+          style="width: 200px; border-radius: 999px"
+          onclick="saveIllness()"
+        >
+          save
+        </button>
+        <button
+          style="
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: &quot;Montserrat&quot;, sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+          "
+          onclick="closeIllnessModal()"
+        >
+          cancel
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Back button
+      document
+        .getElementById("backArrow")
+        .addEventListener("click", function () {
+          if (document.referrer && document.referrer !== "") {
+            window.history.back();
+          } else {
+            window.location.href = "home.html";
+          }
+        });
+
+      // Toggle health settings expand/collapse
+      let healthOpen = false;
+      function toggleHealthSettings() {
+        healthOpen = !healthOpen;
+        const body = document.getElementById("healthBody");
+        const arrow = document.getElementById("healthArrow");
+        body.style.display = healthOpen ? "block" : "none";
+        arrow.className = healthOpen
+          ? "fa fa-chevron-down"
+          : "fa fa-chevron-right";
+      }
+
+      // Illness modal
+      let selectedIllness = null;
+
+      function openIllnessModal() {
+        document.getElementById("illnessBackdrop").classList.add("active");
+        document.getElementById("illnessSheet").classList.add("open");
+        selectedIllness = null;
+        document.getElementById("illnessSearch").value = "";
+        filterIllnesses();
+      }
+
+      function closeIllnessModal() {
+        document.getElementById("illnessBackdrop").classList.remove("active");
+        document.getElementById("illnessSheet").classList.remove("open");
+      }
+
+      function filterIllnesses() {
+        const query = document
+          .getElementById("illnessSearch")
+          .value.toLowerCase();
+        const options = document.querySelectorAll(".illness-option");
+        options.forEach((opt) => {
+          opt.style.display = opt.textContent.toLowerCase().includes(query)
+            ? "block"
+            : "none";
+        });
+      }
+
+      function selectIllness(name) {
+        selectedIllness = name;
+        document.getElementById("illnessSearch").value = name;
+        document.querySelectorAll(".illness-option").forEach((opt) => {
+          opt.classList.toggle("selected", opt.textContent === name);
+        });
+      }
+
+      function saveIllness() {
+        if (!selectedIllness) return;
+        const list = document.getElementById("illnessList");
+        // Check for duplicates
+        const existing = Array.from(list.querySelectorAll(".illness-tag")).map(
+          (t) => t.dataset.name,
+        );
+        if (!existing.includes(selectedIllness)) {
+          const tag = document.createElement("div");
+          tag.className = "illness-tag";
+          tag.dataset.name = selectedIllness;
+          tag.textContent = selectedIllness;
+          list.appendChild(tag);
+        }
+        closeIllnessModal();
+      }
+
+      function handleLogout() {
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
+</html>
