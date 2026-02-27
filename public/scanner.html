@@ -39,7 +39,7 @@
         </div>
       </div>
     </div>
-    <!-- Demo controls (remove in production) -->
+    
     <div class="demo-controls">
       <button
         class="demo-btn"
@@ -70,12 +70,8 @@
       </button>
     </div>
 
-    <!-- Backdrop -->
     <div class="overlay-backdrop" id="backdrop"></div>
 
-    <!-- =====================
-         FOOD INFO POPUP
-    ===================== -->
     <div
       class="bottom-sheet"
       id="food-popup"
@@ -93,7 +89,6 @@
           title="Edit nutrients"
           onclick="toggleEdit()"
         >
-          <!-- Pencil icon -->
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -108,6 +103,14 @@
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
           </svg>
         </button>
+      </div>
+
+      <div 
+        id="ai-verdict-box" 
+        style="display: none; background: rgba(255, 60, 60, 0.15); border-left: 4px solid #ff3c3c; padding: 12px; margin: 10px 20px; border-radius: 8px; font-size: 0.85em; color: #fff; line-height: 1.4;"
+      >
+        <strong style="color: #ff3c3c; display: block; margin-bottom: 4px;">🤖 BiteWise AI Analysis:</strong> 
+        <span id="ai-verdict-text">Analyzing ingredients...</span>
       </div>
 
       <div class="nutrient-list">
@@ -145,9 +148,6 @@
       </div>
     </div>
 
-    <!-- =====================
-         BARCODE POPUP
-    ===================== -->
     <div
       class="bottom-sheet"
       id="barcode-popup"
@@ -174,11 +174,12 @@
         </button>
       </div>
     </div>
-    <script>
 
-const GEMINI_API_KEY = "AIzaSyC1-inKySZDioNm1H1CEWDaqugDjnYoBIM";
+<script>
+// PASTE YOUR REAL API KEY HERE (I REMOVED IT FOR SAFETY!)
+const GEMINI_API_KEY = "YOUR_REAL_API_KEY_HERE";
 
-      // 1. Initialize the Barcode Scanner
+// 1. Initialize the Barcode Scanner
 const html5QrCode = new Html5Qrcode("camera-feed");
 
 // 2. Start the camera and look for barcodes
@@ -224,24 +225,28 @@ async function fetchFoodData(barcode) {
       const product = data.product;
       const nutriments = product.nutriments || {};
 
+      // FIXED JS BUG: Moved this line OUTSIDE of the showFoodPopup object!
+      document.getElementById("ai-verdict-box").style.display = "none";
+
       // Send the real data into your existing popup!
       showFoodPopup({
         name: product.product_name || "Unknown Product",
         calorie: nutriments['energy-kcal_100g'] || 0,
         protein: nutriments.proteins_100g || 0,
         sugar: nutriments.sugars_100g || 0,
-        sodium: nutriments.sodium_100g || 0, // Note: Open Food Facts gives sodium, not salt
+        sodium: nutriments.sodium_100g || 0, 
         fat: nutriments.fat_100g || 0,
         fiber: nutriments.fiber_100g || 0
       });
 
       // We will also save the ingredients list for Gemini later!
       window.currentIngredients = product.ingredients_text || "No ingredients listed";
+      console.log("Ingredients for Gemini:", window.currentIngredients);
+      
       // Trigger the AI analysis!
       if (window.currentIngredients !== "No ingredients listed") {
           analyzeIngredientsWithAI(product.product_name, window.currentIngredients);
       }
-      console.log("Ingredients for Gemini:", window.currentIngredients);
 
     } else {
       alert("Product not found in database!");
@@ -258,170 +263,135 @@ async function fetchFoodData(barcode) {
 // Start the scanner when the page loads
 startSmartScanner();
 
-// Note: Add this line to your existing closePopups() function so the camera resumes when they close the menu:
-// if (html5QrCode.getState() === Html5QrcodeScannerState.PAUSED) html5QrCode.resume();
-
-      document
-        .getElementById("backArrow")
-        .addEventListener("click", function () {
-          if (document.referrer && document.referrer !== "") {
-            window.history.back();
-          } else {
-            window.location.href = "home.html";
-          }
-        });
-
-      // =====================
-      // Popup state
-      // =====================
-      let isEditing = false;
-
-      function openSheet(id) {
-        document.getElementById("backdrop").classList.add("active");
-        document.getElementById(id).classList.add("open");
-      }
-
-      function closePopups() {
-        document.getElementById("backdrop").classList.remove("active");
-        document
-          .querySelectorAll(".bottom-sheet")
-          .forEach((s) => s.classList.remove("open"));
-        setEditMode(false);
-      }
-
-      document
-        .getElementById("backdrop")
-        .addEventListener("click", closePopups);
-
-      // Close on Escape
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closePopups();
-      });
-
-      // =====================
-      // Edit toggle
-      // =====================
-      function setEditMode(on) {
-        isEditing = on;
-        const inputs = document.querySelectorAll(
-          "#food-popup .nutrient-row input",
-        );
-        inputs.forEach((input) => {
-          if (on) {
-            input.removeAttribute("readonly");
-          } else {
-            input.setAttribute("readonly", true);
-          }
-        });
-        const btn = document.getElementById("edit-toggle-btn");
-        btn.style.color = on ? "#E1FF00" : "#aaa";
-      }
-
-      function toggleEdit() {
-        setEditMode(!isEditing);
-        if (isEditing) {
-          // focus first input
-          document.getElementById("f-calorie").focus();
-        }
-      }
-
-      // =====================
-      // Food Popup API
-      // Called by backend/scan logic:
-      //   showFoodPopup({ name, calorie, protein, sugar, sodium, fat, fiber })
-      // =====================
-      function showFoodPopup(data) {
-        document.getElementById("food-name").textContent =
-          data.name || "Unknown Food";
-        document.getElementById("f-calorie").value = data.calorie ?? 0;
-        document.getElementById("f-protein").value = data.protein ?? 0;
-        document.getElementById("f-sugar").value = data.sugar ?? 0;
-        document.getElementById("f-sodium").value = data.sodium ?? 0;
-        document.getElementById("f-fat").value = data.fat ?? 0;
-        document.getElementById("f-fiber").value = data.fiber ?? 0;
-        setEditMode(false);
-        openSheet("food-popup");
-      }
-
-      // =====================
-      // Barcode Popup API
-      // Called by backend/scan logic:
-      //   showBarcodePopup({ name, image })
-      // =====================
-      function showBarcodePopup(data) {
-        document.getElementById("barcode-name").textContent =
-          data.name || "Unknown Product";
-        const img = document.getElementById("barcode-image");
-        if (data.image) {
-          img.src = data.image;
-          img.style.display = "block";
-        } else {
-          img.style.display = "none";
-        }
-        openSheet("barcode-popup");
-      }
-
-      // =====================
-      // Add handlers - backend hooks
-      // Replace with actual API calls
-      // =====================
-      function addFoodEntry() {
-        // 1. Grab all the data from the popup
-        const entry = {
-          name: document.getElementById("food-name").textContent,
-          calorie: Number(document.getElementById("f-calorie").value),
-          protein: Number(document.getElementById("f-protein").value),
-          sugar: Number(document.getElementById("f-sugar").value),
-          sodium: Number(document.getElementById("f-sodium").value),
-          fat: Number(document.getElementById("f-fat").value),
-          fiber: Number(document.getElementById("f-fiber").value),
-          timestamp: new Date().toISOString() // Tags when it was scanned
-        };
-
-        // 2. Save it to Local Storage (so your Dashboard can read it later!)
-        let currentPantry = JSON.parse(localStorage.getItem("myFoodPantry")) || [];
-        currentPantry.push(entry);
-        localStorage.setItem("myFoodPantry", JSON.stringify(currentPantry));
-
-        // 3. Give the user a visual confirmation
-        alert(`✅ Successfully added ${entry.name} to your pantry!`);
-
-        // 4. Close the popup
-        closePopups();
-        
-        // 5. Resume the camera scanner if it was paused
-        if (typeof html5QrCode !== 'undefined') {
-          html5QrCode.resume();
-        }
-      }
-
-      function addBarcodeEntry() {
-        const entry = {
-          name: document.getElementById("barcode-name").textContent,
-        };
-        console.log("[addBarcodeEntry]", entry);
-        // TODO: send entry to backend
-        closePopups();
-      }
-
-      // =====================
-      // Expose globally for backend integration
-      // =====================
-      window.showFoodPopup = showFoodPopup;
-      window.showBarcodePopup = showBarcodePopup;
+document.getElementById("backArrow").addEventListener("click", function () {
+  if (document.referrer && document.referrer !== "") {
+    window.history.back();
+  } else {
+    window.location.href = "home.html";
+  }
+});
 
 // =====================
-// STEP 2: THE GEMINI BRAIN
+// Popup state
+// =====================
+let isEditing = false;
+
+function openSheet(id) {
+  document.getElementById("backdrop").classList.add("active");
+  document.getElementById(id).classList.add("open");
+}
+
+function closePopups() {
+  document.getElementById("backdrop").classList.remove("active");
+  document.querySelectorAll(".bottom-sheet").forEach((s) => s.classList.remove("open"));
+  setEditMode(false);
+  
+  // Resume scanner if closed!
+  if (typeof html5QrCode !== 'undefined' && html5QrCode.getState() === Html5QrcodeScannerState.PAUSED) {
+     html5QrCode.resume();
+  }
+}
+
+document.getElementById("backdrop").addEventListener("click", closePopups);
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closePopups();
+});
+
+// =====================
+// Edit toggle
+// =====================
+function setEditMode(on) {
+  isEditing = on;
+  const inputs = document.querySelectorAll("#food-popup .nutrient-row input");
+  inputs.forEach((input) => {
+    if (on) {
+      input.removeAttribute("readonly");
+    } else {
+      input.setAttribute("readonly", true);
+    }
+  });
+  const btn = document.getElementById("edit-toggle-btn");
+  btn.style.color = on ? "#E1FF00" : "#aaa";
+}
+
+function toggleEdit() {
+  setEditMode(!isEditing);
+  if (isEditing) {
+    document.getElementById("f-calorie").focus();
+  }
+}
+
+// =====================
+// Food Popup API
+// =====================
+function showFoodPopup(data) {
+  document.getElementById("food-name").textContent = data.name || "Unknown Food";
+  document.getElementById("f-calorie").value = data.calorie ?? 0;
+  document.getElementById("f-protein").value = data.protein ?? 0;
+  document.getElementById("f-sugar").value = data.sugar ?? 0;
+  document.getElementById("f-sodium").value = data.sodium ?? 0;
+  document.getElementById("f-fat").value = data.fat ?? 0;
+  document.getElementById("f-fiber").value = data.fiber ?? 0;
+  setEditMode(false);
+  openSheet("food-popup");
+}
+
+function showBarcodePopup(data) {
+  document.getElementById("barcode-name").textContent = data.name || "Unknown Product";
+  const img = document.getElementById("barcode-image");
+  if (data.image) {
+    img.src = data.image;
+    img.style.display = "block";
+  } else {
+    img.style.display = "none";
+  }
+  openSheet("barcode-popup");
+}
+
+// =====================
+// Add handlers
+// =====================
+function addFoodEntry() {
+  const entry = {
+    name: document.getElementById("food-name").textContent,
+    calorie: Number(document.getElementById("f-calorie").value),
+    protein: Number(document.getElementById("f-protein").value),
+    sugar: Number(document.getElementById("f-sugar").value),
+    sodium: Number(document.getElementById("f-sodium").value),
+    fat: Number(document.getElementById("f-fat").value),
+    fiber: Number(document.getElementById("f-fiber").value),
+    timestamp: new Date().toISOString()
+  };
+
+  let currentPantry = JSON.parse(localStorage.getItem("myFoodPantry")) || [];
+  currentPantry.push(entry);
+  localStorage.setItem("myFoodPantry", JSON.stringify(currentPantry));
+
+  alert(`✅ Successfully added ${entry.name} to your pantry!`);
+  closePopups();
+}
+
+function addBarcodeEntry() {
+  const entry = {
+    name: document.getElementById("barcode-name").textContent,
+  };
+  console.log("[addBarcodeEntry]", entry);
+  closePopups();
+}
+
+window.showFoodPopup = showFoodPopup;
+window.showBarcodePopup = showBarcodePopup;
+
+// =====================
+// THE GEMINI BRAIN
 // =====================
 async function analyzeIngredientsWithAI(foodName, ingredients) {
-  // 1. We create a "Mock Profile" to simulate our personalization feature
   const userProfile = {
     condition: "Type 2 Diabetes",
     allergy: "Peanuts",
     preference: "Halal"
   };
 
-  // 2. We write the System Prompt (This tells Gemini exactly what to do)
   const promptText = `
     You are an expert nutritionist. 
     Analyze this food: ${foodName}.
@@ -434,11 +404,16 @@ async function analyzeIngredientsWithAI(foodName, ingredients) {
     Keep the response very short, maximum 2 bullet points.
   `;
 
-  // 3. We set up the connection to Google's servers using Gemini 1.5 Flash
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
   try {
-    console.log("Sending to Gemini... please wait.");
+    const verdictBox = document.getElementById("ai-verdict-box");
+    const verdictText = document.getElementById("ai-verdict-text");
+    
+    verdictBox.style.display = "block";
+    verdictBox.style.borderLeftColor = "#E1FF00"; 
+    verdictBox.style.background = "rgba(225, 255, 0, 0.1)";
+    verdictText.innerHTML = "<em>Analyzing ingredients for your profile...</em>";
     
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -449,19 +424,19 @@ async function analyzeIngredientsWithAI(foodName, ingredients) {
     });
 
     const data = await response.json();
-    
-    // Extract the text response from Gemini
     const aiVerdict = data.candidates[0].content.parts[0].text;
     
-    // For now, let's just pop it up in an alert so you can see it working!
-    alert(`🤖 AI Verdict for ${foodName}:\n\n${aiVerdict}`);
-    console.log("Gemini says:", aiVerdict);
+    // FIXED JS BUG: Cleaned up the extra try/catch blocks that broke the code here!
+    verdictBox.style.borderLeftColor = "#ff3c3c"; 
+    verdictBox.style.background = "rgba(255, 60, 60, 0.15)";
+    verdictText.innerHTML = aiVerdict.replace(/\n/g, "<br>");
 
   } catch (error) {
     console.error("Gemini AI Error:", error);
-    alert("Oops, the AI couldn't analyze this right now.");
+    const verdictText = document.getElementById("ai-verdict-text");
+    verdictText.innerHTML = "Could not load AI analysis. Please check connection.";
   }
 }
-    </script>
-  </body>
+</script>
+</body>
 </html>
