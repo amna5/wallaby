@@ -26,23 +26,19 @@
             </a>
           </div>
         </div>
-
-        <div class="floating-nav">
-          <button class="nav-btn active">
-            <a href="home.html"
-              ><img src="../img/home_button.svg" alt="Home"
-            /></a>
-          </button>
-
-          <button class="nav-btn">
-            <a href="scanner.html"><img src="../img/scan.svg" alt="Scan" /></a>
-          </button>
-
-          <button class="nav-btn">
-            <a href=""><img src="../img/people.svg" alt="Users" /></a>
-          </button>
-        </div>
       </div>
     </div>
+    <script>
+      // Back button
+      document
+        .getElementById("backArrow")
+        .addEventListener("click", function () {
+          if (document.referrer && document.referrer !== "") {
+            window.history.back();
+          } else {
+            window.location.href = "home.html";
+          }
+        });
+    </script>
   </body>
 </html>

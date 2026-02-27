@@ -4,45 +4,1198 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weight</title>
-    <link rel="stylesheet" href="inside.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: "Montserrat", sans-serif;
+        color: #fff;
+      }
+
+      .page {
+        max-width: 420px;
+        margin: 0 auto;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: #000;
+      }
+
+      /* ── HEADER (matches inside.css) ── */
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 20px 20px 10px;
+        flex-shrink: 0;
+        z-index: 2;
+        margin-bottom: 2px;
+        margin-top: 9.99px;
+      }
+      .header img#backArrow {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .header h1 {
+        flex: 1;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        margin: 0;
+        margin-right: 1114px;
+      }
+      .left-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: -480px;
+        /* space between arrow and Weight */
+      }
+
+      /* profile wrapper — pill that tucks settings chip below avatar */
+      .profile-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 60px;
+        padding-right: 60px;
+        margin-left: auto;
+      }
+      .profile-btn {
+        position: relative;
+        z-index: 1;
+        background-color: black;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+        flex-shrink: 0;
+      }
+      .profile-btn:hover {
+        transform: scale(1.1);
+      }
+      .profile-btn img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .settings-chip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #1c1c1c;
+        color: white;
+        font-weight: 700;
+        font-size: 15px;
+        padding: 6px 14px;
+        border-radius: 9px;
+        border: 2px solid #262626;
+        margin-top: -14px;
+        z-index: 2;
+        white-space: nowrap;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+      }
+      .settings-chip:hover {
+        transform: scale(1.1);
+      }
+      .settings-chip img {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* ── MIDDLE: weight + chart + bmi — takes all space above sheet ── */
+      .middle {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 8px;
+      }
+
+      .weight-display {
+        text-align: center;
+        padding: 0 20px;
+      }
+      .big-num {
+        font-size: 50px;
+        font-weight: 800;
+        letter-spacing: -1px;
+      }
+      .big-num .unit {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .date-lbl {
+        font-size: 13px;
+        color: #888;
+        margin-top: 4px;
+      }
+
+      /* ── CHART ── */
+      .chart-area {
+        width: 100%;
+        padding: 18px 0 0;
+      }
+      .chart-scroll {
+        width: 100%;
+        overflow-x: scroll;
+        overflow-y: visible;
+        scrollbar-width: none;
+        cursor: grab;
+        padding-bottom: 22px;
+      }
+      .chart-scroll::-webkit-scrollbar {
+        display: none;
+      }
+      .chart-scroll.drag {
+        cursor: grabbing;
+        user-select: none;
+      }
+      .chart-inner {
+        position: relative;
+        height: 70px;
+      }
+      .chart-inner svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: visible;
+      }
+
+      /* ── BMI ── */
+      .bmi-section {
+        text-align: center;
+        padding: 6px 0 4px;
+        width: 100%;
+      }
+      .bmi-val {
+        font-size: 17px;
+        font-weight: 800;
+      }
+      .bmi-cat {
+        font-size: 12px;
+        color: #888;
+        margin-top: 3px;
+        font-weight: 500;
+      }
+
+      /* ══════════════════════════════════════
+       BOTTOM SHEET
+       Key: height transitions between HANDLE_H and OPEN_H.
+       The sheet only occupies what it shows — never covers chart.
+    ══════════════════════════════════════ */
+      .bottom-sheet {
+        flex-shrink: 0;
+        width: 100%;
+        background: #111;
+        border-radius: 20px 20px 0 0;
+        display: flex;
+        flex-direction: column;
+        /* height set by JS, transition on height */
+        overflow: hidden;
+        transition: height 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+        position: relative;
+      }
+
+      /* Handle — always visible */
+      .sheet-handle-row {
+        display: flex;
+        justify-content: center;
+        padding: 10px 0 10px;
+        flex-shrink: 0;
+        cursor: pointer;
+        touch-action: none;
+        user-select: none;
+      }
+      .sheet-handle {
+        width: 38px;
+        height: 4px;
+        background: #fff;
+        border-radius: 99px;
+        transition: background 0.2s;
+      }
+      .sheet-handle-row:hover .sheet-handle {
+        background: #b8b8b8;
+      }
+
+      /* Sheet body — clipped when sheet height = handle only */
+      .sheet-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      /* ── STATS TABS ── */
+      .sheet-stats {
+        display: flex;
+        flex-shrink: 0;
+      }
+      .sh-tab {
+        flex: 1;
+        text-align: center;
+        padding: 8px 4px 10px;
+        position: relative;
+        cursor: pointer;
+      }
+      .sh-tab .sh-lbl {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: white;
+      }
+      .sh-lbl {
+        background-color: #798708;
+      }
+
+      .sh-tab .sh-val {
+        font-size: 18px;
+        font-weight: 700;
+        color: #fff;
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+      .sh-tab .sh-unit {
+        font-size: 10px;
+        font-weight: 600;
+        color: #888;
+      }
+      .sh-tab::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 3px;
+        background: #fff;
+        border-radius: 99px;
+        width: 0;
+        transition: width 0.3s;
+      }
+
+      .ctri-up {
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 8px solid #63c071;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .ctri-down {
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 8px solid #ff3b30;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+
+      .sheet-divider {
+        height: 1px;
+        background: #1e1e1e;
+        flex-shrink: 0;
+      }
+
+      /* ── LOG LIST ── */
+      .sheet-log {
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-width: none;
+        padding-bottom: 90px;
+      }
+      .sheet-log::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* ── LOG ENTRIES ── */
+      .log-entry {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 16px;
+        border-bottom: 1px solid #1a1a1a;
+        position: relative;
+      }
+      .log-entry:last-child {
+        border-bottom: none;
+      }
+      .log-w {
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .log-d {
+        font-size: 12px;
+        color: #555;
+        margin-top: 2px;
+        font-weight: 500;
+      }
+
+      .more-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px 8px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3.5px;
+        transition: background 0.2s;
+        flex-shrink: 0;
+      }
+      .more-btn .mdot {
+        display: block;
+        width: 3.5px;
+        height: 3.5px;
+        border-radius: 50%;
+        background: #555;
+        transition: background 0.2s;
+      }
+      .more-btn:hover .mdot {
+        background: #ccc;
+      }
+
+      .entry-pop {
+        display: none;
+        position: absolute;
+        right: 44px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #1c1c1e;
+        border: 1px solid #2a2a2a;
+        border-radius: 12px;
+        overflow: hidden;
+        z-index: 60;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+        min-width: 110px;
+      }
+      .entry-pop.open {
+        display: block;
+      }
+      .pop-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 14px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+        color: #fff;
+      }
+      .pop-row:hover {
+        background: #2a2a2a;
+      }
+      .pop-row:not(:last-child) {
+        border-bottom: 1px solid #2a2a2a;
+      }
+      .pop-row.danger {
+        color: #ff453a;
+      }
+      .pop-row svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+      }
+
+      /* FAB inside sheet */
+      .sheet-fab {
+        position: absolute;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 56px;
+        height: 56px;
+        background: #fff;
+        color: #000;
+        border: none;
+        border-radius: 50%;
+        font-size: 28px;
+        font-weight: 300;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+        transition: transform 0.2s;
+        z-index: 10;
+        line-height: 1;
+      }
+      .sheet-fab:hover {
+        transform: translateX(-50%) scale(1.08);
+      }
+
+      /* ── MODAL ── */
+      .modal-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: 200;
+        backdrop-filter: blur(7px);
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-backdrop.active {
+        display: flex;
+      }
+      .modal-card {
+        background: #1a1a1a;
+        border-radius: 20px;
+        padding: 22px 20px 18px;
+        width: 88%;
+        max-width: 320px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.9);
+      }
+      .modal-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #aaa;
+        text-align: center;
+        margin-bottom: 18px;
+        letter-spacing: 0.5px;
+      }
+      .modal-field {
+        margin-bottom: 14px;
+      }
+      .modal-field label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #888;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+      }
+      .modal-input-wrap {
+        display: flex;
+        align-items: center;
+        background: #252525;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .modal-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: white;
+        font-family: "Montserrat", sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 12px 14px;
+        outline: none;
+      }
+      .modal-input::-webkit-outer-spin-button,
+      .modal-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      .modal-suf {
+        font-size: 13px;
+        font-weight: 700;
+        color: #555;
+        padding-right: 14px;
+      }
+      .modal-save {
+        width: 100%;
+        padding: 14px;
+        background: #e0e0e0;
+        color: #000;
+        border: none;
+        border-radius: 14px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        cursor: pointer;
+        margin-top: 4px;
+        transition:
+          background 0.2s,
+          transform 0.15s;
+      }
+      .modal-save:hover {
+        background: #ccc;
+        transform: scale(0.99);
+      }
+      .modal-cancel {
+        display: block;
+        width: 100%;
+        text-align: center;
+        background: none;
+        border: none;
+        color: #666;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 11px;
+        transition: color 0.2s;
+      }
+      .modal-cancel:hover {
+        color: #aaa;
+      }
+    </style>
   </head>
   <body>
-    <div class="app">
-      <div class="adjust">
-        <div class="header">
+    <div class="page">
+      <!-- HEADER (matches inside.css structure) -->
+      <div class="header">
+        <div class="left-header">
           <img src="../img/arrow.svg" alt="arrow" id="backArrow" />
           <h1>Weight</h1>
-
-          <div class="profile-wrapper">
-            <button class="profile-btn">
-              <img src="../img/profile_logo.svg" alt="Profile" />
-            </button>
-            <a href="settings.html" class="settings-chip">
-              <img src="../img/settings.svg" alt="Settings" />
-              settings
-            </a>
-          </div>
         </div>
-        <div class="floating-nav">
-          <button class="nav-btn active">
-            <a href="home.html"
-              ><img src="../img/home_button.svg" alt="Home"
-            /></a>
+        <div class="profile-wrapper">
+          <button class="profile-btn">
+            <img src="../img/profile_logo.svg" alt="Profile" />
           </button>
-
-          <button class="nav-btn">
-            <a href="scanner.html"><img src="../img/scan.svg" alt="Scan" /></a>
-          </button>
-
-          <button class="nav-btn">
-            <a href=""><img src="../img/people.svg" alt="Users" /></a>
-          </button>
+          <a href="settings.html" class="settings-chip">
+            <img src="../img/settings.svg" alt="Settings" />
+            settings
+          </a>
         </div>
       </div>
+
+      <!-- MIDDLE: weight + chart + bmi — never hidden by sheet -->
+      <div class="middle">
+        <div class="weight-display">
+          <div class="big-num" id="bigNum">
+            43.00 <span class="unit">kg</span>
+          </div>
+          <div class="date-lbl" id="bigDate">17-4-2025</div>
+        </div>
+
+        <div class="chart-area">
+          <div class="chart-scroll" id="chartScroll">
+            <div class="chart-inner" id="chartInner">
+              <svg id="chartSvg"></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="bmi-section">
+          <div class="bmi-val" id="bmiVal">BMI 18.8</div>
+          <div class="bmi-cat" id="bmiCat">underweight</div>
+        </div>
+
+        <div class="scroll-dots">
+          <div class="s-pip"></div>
+          <div class="s-pip active"></div>
+          <div class="s-pip"></div>
+        </div>
+      </div>
+
+      <!-- BOTTOM SHEET: sits below .middle, height animates open/closed -->
+      <div class="bottom-sheet" id="bottomSheet">
+        <!-- Handle — only thing visible when closed -->
+        <div class="sheet-handle-row" id="sheetHandleRow">
+          <div class="sheet-handle"></div>
+        </div>
+
+        <div class="sheet-body">
+          <!-- Stats tabs -->
+          <div class="sheet-stats">
+            <div class="sh-tab" data-t="start">
+              <div class="sh-lbl">Start</div>
+              <div class="sh-val" id="shStartVal">
+                40 <span class="sh-unit">kg</span>
+              </div>
+            </div>
+            <div class="sh-tab" data-t="current">
+              <div class="sh-lbl">Current</div>
+              <div class="sh-val" id="shCurrentVal">
+                45 <span class="sh-unit">kg</span>
+              </div>
+            </div>
+            <div class="sh-tab" data-t="change">
+              <div class="sh-lbl">Change</div>
+              <div class="sh-val" id="shChangeVal">
+                <span class="ctri-up" id="changeTri"></span>
+                <span id="changeNum">4.5</span>
+                <span class="sh-unit">kg</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sheet-divider"></div>
+
+          <div class="sheet-log" id="sheetLog"></div>
+        </div>
+
+        <button class="sheet-fab" id="fabBtn">+</button>
+      </div>
     </div>
+
+    <!-- MODAL -->
+    <div class="modal-backdrop" id="modalBackdrop">
+      <div class="modal-card">
+        <div class="modal-title" id="modalTitle">new entry</div>
+        <div class="modal-field">
+          <label>weight</label>
+          <div class="modal-input-wrap">
+            <input
+              class="modal-input"
+              type="number"
+              id="mWeight"
+              step="0.1"
+              min="20"
+              max="300"
+              placeholder="0.00"
+            />
+            <span class="modal-suf">kg</span>
+          </div>
+        </div>
+        <div class="modal-field">
+          <label>date</label>
+          <div class="modal-input-wrap">
+            <input
+              class="modal-input"
+              type="text"
+              id="mDate"
+              placeholder="Today"
+            />
+          </div>
+        </div>
+        <button class="modal-save" id="mSave">save</button>
+        <button class="modal-cancel" id="mCancel">cancel</button>
+      </div>
+    </div>
+
+    <script>
+      // ─────────────────────────────────────
+      // DATA
+      // ─────────────────────────────────────
+      let logs = [
+        { id: 9, weight: 44.5, date: "Tuesday 4-22-2025" },
+        { id: 8, weight: 46.0, date: "Monday 4-21-2025" },
+        { id: 7, weight: 44.0, date: "Sunday 4-20-2025" },
+        { id: 6, weight: 45.0, date: "Saturday 4-19-2025" },
+        { id: 5, weight: 42.5, date: "Friday 4-18-2025" },
+        { id: 4, weight: 43.0, date: "Thursday 4-17-2025" },
+        { id: 3, weight: 41.0, date: "Wednesday 4-16-2025" },
+        { id: 2, weight: 40.5, date: "Tuesday 4-15-2025" },
+        { id: 1, weight: 41.5, date: "Monday 4-14-2025" },
+      ];
+
+      const HEIGHT_M = 1.63;
+      let activeIdx = 3;
+      let editingId = null;
+      let openPopId = null;
+
+      // ─────────────────────────────────────
+      // SHEET — animate HEIGHT (not transform)
+      // closed = just handle bar height
+      // open   = OPEN_H px
+      // ─────────────────────────────────────
+      const sheet = document.getElementById("bottomSheet");
+      const handleRow = document.getElementById("sheetHandleRow");
+      let isOpen = false;
+      let HANDLE_H = 0;
+      const OPEN_H = 420; // px when open
+
+      function setHeight(h, animate) {
+        if (!animate) sheet.style.transition = "none";
+        sheet.style.height = h + "px";
+        if (!animate)
+          requestAnimationFrame(() => {
+            sheet.style.transition = "";
+          });
+      }
+
+      function openSheet() {
+        isOpen = true;
+        setHeight(OPEN_H, true);
+      }
+      function closeSheet() {
+        isOpen = false;
+        setHeight(HANDLE_H, true);
+      }
+
+      // Click on handle = toggle
+      handleRow.addEventListener("click", () => {
+        if (isOpen) closeSheet();
+        else openSheet();
+      });
+
+      // Drag handle
+      let dragActive = false,
+        dragStartY = 0,
+        dragStartH = 0;
+
+      handleRow.addEventListener("mousedown", (e) => {
+        dragActive = true;
+        dragStartY = e.clientY;
+        dragStartH = sheet.offsetHeight;
+        sheet.style.transition = "none";
+        e.preventDefault();
+      });
+      handleRow.addEventListener(
+        "touchstart",
+        (e) => {
+          dragActive = true;
+          dragStartY = e.touches[0].clientY;
+          dragStartH = sheet.offsetHeight;
+          sheet.style.transition = "none";
+        },
+        { passive: true },
+      );
+
+      document.addEventListener("mousemove", (e) => {
+        if (!dragActive) return;
+        const dy = dragStartY - e.clientY; // drag up = positive
+        const newH = Math.max(HANDLE_H, Math.min(OPEN_H, dragStartH + dy));
+        sheet.style.height = newH + "px";
+      });
+      document.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!dragActive) return;
+          const dy = dragStartY - e.touches[0].clientY;
+          const newH = Math.max(HANDLE_H, Math.min(OPEN_H, dragStartH + dy));
+          sheet.style.height = newH + "px";
+        },
+        { passive: true },
+      );
+
+      function endDrag(endY) {
+        if (!dragActive) return;
+        dragActive = false;
+        sheet.style.transition = "";
+        const dy = dragStartY - endY;
+        const currentH = sheet.offsetHeight;
+        // snap: if more than halfway to open → open, else close
+        if (currentH > (HANDLE_H + OPEN_H) / 2 || dy > 60) openSheet();
+        else closeSheet();
+      }
+      document.addEventListener("mouseup", (e) => endDrag(e.clientY));
+      document.addEventListener("touchend", (e) =>
+        endDrag(e.changedTouches[0].clientY),
+      );
+
+      // Tab clicks
+      document.querySelectorAll(".sh-tab").forEach((tab) => {
+        tab.addEventListener("click", (e) => {
+          e.stopPropagation();
+          document
+            .querySelectorAll(".sh-tab")
+            .forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+        });
+      });
+
+      // ─────────────────────────────────────
+      // CHART
+      // ─────────────────────────────────────
+      const svgNS = "http://www.w3.org/2000/svg";
+      const STEP = 85,
+        PAD = 40,
+        CH = 70;
+
+      function getChartPts() {
+        const data = [...logs].reverse();
+        const weights = data.map((d) => d.weight);
+        const minW = Math.min(...weights),
+          maxW = Math.max(...weights);
+        const range = maxW - minW || 1;
+        const toY = (w) => CH - 10 - ((w - minW) / range) * (CH - 20);
+        return data.map((d, i) => ({
+          x: PAD + i * STEP,
+          y: toY(d.weight),
+          w: d.weight,
+          date: d.date,
+          logIdx: data.length - 1 - i,
+        }));
+      }
+
+      function buildChart() {
+        const pts = getChartPts();
+        const n = pts.length;
+        const totalW = PAD + (n - 1) * STEP + PAD;
+
+        document.getElementById("chartInner").style.width = totalW + "px";
+
+        const svg = document.getElementById("chartSvg");
+        svg.innerHTML = "";
+        svg.setAttribute("width", totalW);
+        svg.setAttribute("height", CH);
+        svg.setAttribute("viewBox", `0 0 ${totalW} ${CH}`);
+
+        const chartActiveI = n - 1 - activeIdx;
+        const activePt = pts[chartActiveI];
+
+        // Line
+        if (n > 1) {
+          const poly = document.createElementNS(svgNS, "polyline");
+          poly.setAttribute(
+            "points",
+            pts.map((p) => `${p.x},${p.y}`).join(" "),
+          );
+          poly.setAttribute("fill", "none");
+          poly.setAttribute("stroke", "#E1FF00");
+          poly.setAttribute("stroke-width", "2.5");
+          poly.setAttribute("stroke-linejoin", "round");
+          poly.setAttribute("stroke-linecap", "round");
+          svg.appendChild(poly);
+        }
+
+        // Dots
+        pts.forEach((p, i) => {
+          const isActive = i === chartActiveI;
+
+          const dot = document.createElementNS(svgNS, "circle");
+          dot.setAttribute("cx", p.x);
+          dot.setAttribute("cy", p.y);
+          dot.setAttribute("r", isActive ? "7" : "5.5");
+          dot.setAttribute("fill", isActive ? "#ffffff" : "#E1FF00");
+          svg.appendChild(dot);
+
+          const hit = document.createElementNS(svgNS, "circle");
+          hit.setAttribute("cx", p.x);
+          hit.setAttribute("cy", p.y);
+          hit.setAttribute("r", "20");
+          hit.setAttribute("fill", "transparent");
+          hit.style.cursor = "pointer";
+          svg.appendChild(hit);
+
+          const capturedLogIdx = p.logIdx;
+          hit.addEventListener("click", (e) => {
+            e.stopPropagation();
+            activeIdx = capturedLogIdx;
+            buildChart();
+            updateDisplay();
+            centerActive();
+          });
+        });
+
+        // Triangle below active dot
+        const TW = 6,
+          TH = 10;
+        const triBaseY = activePt.y + 7 + 5;
+        let triDir = "down";
+        if (activeIdx < logs.length - 1)
+          triDir =
+            logs[activeIdx].weight >= logs[activeIdx + 1].weight
+              ? "up"
+              : "down";
+
+        const tri = document.createElementNS(svgNS, "polygon");
+        if (triDir === "down") {
+          tri.setAttribute(
+            "points",
+            `${activePt.x - TW},${triBaseY} ${activePt.x + TW},${triBaseY} ${activePt.x},${triBaseY + TH}`,
+          );
+          tri.setAttribute("fill", "#ff3b30");
+        } else {
+          tri.setAttribute(
+            "points",
+            `${activePt.x - TW},${triBaseY + TH} ${activePt.x + TW},${triBaseY + TH} ${activePt.x},${triBaseY}`,
+          );
+          tri.setAttribute("fill", "#63c071");
+        }
+        svg.appendChild(tri);
+      }
+
+      function centerActive() {
+        const n = logs.length;
+        const i = n - 1 - activeIdx;
+        const dotX = PAD + i * STEP;
+        const sc = document.getElementById("chartScroll");
+        sc.scrollTo({ left: dotX - sc.offsetWidth / 2, behavior: "smooth" });
+      }
+
+      // ─────────────────────────────────────
+      // DISPLAY
+      // ─────────────────────────────────────
+      function updateDisplay() {
+        if (!logs.length) return;
+        const log = logs[activeIdx];
+        document.getElementById("bigNum").innerHTML =
+          `${log.weight.toFixed(2)} <span class="unit">kg</span>`;
+        const parts = log.date.split(" ");
+        if (parts.length === 2) {
+          const s = parts[1].split("-");
+          document.getElementById("bigDate").textContent =
+            `${s[1]}-${s[0]}-${s[2]}`;
+        } else {
+          document.getElementById("bigDate").textContent = log.date;
+        }
+        updateBMI(log.weight);
+        updateStats();
+      }
+
+      function updateBMI(w) {
+        const bmi = w / (HEIGHT_M * HEIGHT_M);
+        document.getElementById("bmiVal").textContent = `BMI ${bmi.toFixed(1)}`;
+        const cat = document.getElementById("bmiCat");
+        if (bmi < 18.5) cat.textContent = "underweight";
+        else if (bmi < 25) cat.textContent = "normal weight";
+        else if (bmi < 30) cat.textContent = "overweight";
+        else cat.textContent = "obese";
+      }
+
+      function updateStats() {
+        if (!logs.length) return;
+        const startW = logs[logs.length - 1].weight;
+        const currentW = logs[0].weight;
+        const diff = +(currentW - startW).toFixed(1);
+        const absDiff = Math.abs(diff);
+        document.getElementById("shStartVal").innerHTML =
+          `${startW} <span class="sh-unit">kg</span>`;
+        document.getElementById("shCurrentVal").innerHTML =
+          `${currentW} <span class="sh-unit">kg</span>`;
+        document.getElementById("shChangeVal").innerHTML =
+          `<span class="${diff >= 0 ? "ctri-up" : "ctri-down"}"></span>
+     <span>${absDiff}</span><span class="sh-unit">kg</span>`;
+      }
+
+      // ─────────────────────────────────────
+      // CHART DRAG SCROLL
+      // ─────────────────────────────────────
+      const chartScrollEl = document.getElementById("chartScroll");
+      let cDrag = false,
+        cDragStartX,
+        cDragScrollLeft;
+
+      chartScrollEl.addEventListener("mousedown", (e) => {
+        cDrag = true;
+        cDragStartX = e.pageX - chartScrollEl.offsetLeft;
+        cDragScrollLeft = chartScrollEl.scrollLeft;
+        chartScrollEl.classList.add("drag");
+      });
+      document.addEventListener("mouseup", () => {
+        cDrag = false;
+        chartScrollEl.classList.remove("drag");
+      });
+      chartScrollEl.addEventListener("mousemove", (e) => {
+        if (!cDrag) return;
+        e.preventDefault();
+        chartScrollEl.scrollLeft =
+          cDragScrollLeft - (e.pageX - chartScrollEl.offsetLeft - cDragStartX);
+      });
+      chartScrollEl.addEventListener(
+        "touchstart",
+        (e) => {
+          cDragStartX = e.touches[0].pageX;
+          cDragScrollLeft = chartScrollEl.scrollLeft;
+        },
+        { passive: true },
+      );
+      chartScrollEl.addEventListener(
+        "touchmove",
+        (e) => {
+          chartScrollEl.scrollLeft =
+            cDragScrollLeft - (e.touches[0].pageX - cDragStartX);
+        },
+        { passive: true },
+      );
+
+      // ─────────────────────────────────────
+      // LOG RENDER
+      // ─────────────────────────────────────
+      function renderLogs() {
+        const c = document.getElementById("sheetLog");
+        c.innerHTML = "";
+        if (!logs.length) {
+          c.innerHTML =
+            '<div style="padding:30px;text-align:center;color:#444;font-weight:700;">No entries yet</div>';
+          return;
+        }
+        logs.forEach((log) => {
+          const div = document.createElement("div");
+          div.className = "log-entry";
+          div.innerHTML = `
+      <div>
+        <div class="log-w">${log.weight} kg</div>
+        <div class="log-d">${log.date}</div>
+      </div>
+      <button class="more-btn" data-id="${log.id}">
+        <span class="mdot"></span><span class="mdot"></span><span class="mdot"></span>
+      </button>
+      <div class="entry-pop" id="epop-${log.id}">
+        <div class="pop-row edit-row" data-id="${log.id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>edit
+        </div>
+        <div class="pop-row danger del-row" data-id="${log.id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+          </svg>delete
+        </div>
+      </div>`;
+          c.appendChild(div);
+        });
+
+        c.querySelectorAll(".more-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            togglePop(btn.dataset.id);
+          });
+        });
+        c.querySelectorAll(".edit-row").forEach((el) => {
+          el.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openEditModal(el.dataset.id);
+            closeAllPops();
+          });
+        });
+        c.querySelectorAll(".del-row").forEach((el) => {
+          el.addEventListener("click", (e) => {
+            e.stopPropagation();
+            logs = logs.filter((l) => l.id !== parseInt(el.dataset.id));
+            if (activeIdx >= logs.length)
+              activeIdx = Math.max(0, logs.length - 1);
+            renderLogs();
+            if (logs.length) {
+              buildChart();
+              updateDisplay();
+            }
+            closeAllPops();
+          });
+        });
+      }
+
+      function togglePop(id) {
+        if (openPopId === id) {
+          closeAllPops();
+          return;
+        }
+        closeAllPops();
+        const el = document.getElementById(`epop-${id}`);
+        if (el) {
+          el.classList.add("open");
+          openPopId = id;
+        }
+      }
+      function closeAllPops() {
+        document
+          .querySelectorAll(".entry-pop")
+          .forEach((p) => p.classList.remove("open"));
+        openPopId = null;
+      }
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".more-btn") && !e.target.closest(".entry-pop"))
+          closeAllPops();
+      });
+
+      // ─────────────────────────────────────
+      // MODAL
+      // ─────────────────────────────────────
+      function openAddModal() {
+        editingId = null;
+        document.getElementById("modalTitle").textContent = "new entry";
+        document.getElementById("mWeight").value = "";
+        document.getElementById("mDate").value = "Today";
+        document.getElementById("modalBackdrop").classList.add("active");
+        setTimeout(() => document.getElementById("mWeight").focus(), 100);
+      }
+      function openEditModal(id) {
+        editingId = parseInt(id);
+        const log = logs.find((l) => l.id === editingId);
+        if (!log) return;
+        document.getElementById("modalTitle").textContent = "update entry";
+        document.getElementById("mWeight").value = log.weight;
+        document.getElementById("mDate").value = log.date;
+        document.getElementById("modalBackdrop").classList.add("active");
+        setTimeout(() => document.getElementById("mWeight").focus(), 100);
+      }
+      function closeModal() {
+        document.getElementById("modalBackdrop").classList.remove("active");
+        editingId = null;
+      }
+
+      document.getElementById("fabBtn").addEventListener("click", openAddModal);
+      document.getElementById("mCancel").addEventListener("click", closeModal);
+      document
+        .getElementById("modalBackdrop")
+        .addEventListener("click", (e) => {
+          if (e.target === document.getElementById("modalBackdrop"))
+            closeModal();
+        });
+      document.getElementById("mSave").addEventListener("click", () => {
+        const w = parseFloat(document.getElementById("mWeight").value);
+        const d = document.getElementById("mDate").value.trim();
+        if (!w || !d) return;
+        let dateStr = d;
+        if (d.toLowerCase() === "today") {
+          const now = new Date();
+          const wd = now.toLocaleDateString("en-US", { weekday: "long" });
+          dateStr = `${wd} ${now.getMonth() + 1}-${now.getDate()}-${now.getFullYear()}`;
+        }
+        if (editingId !== null) {
+          const i = logs.findIndex((l) => l.id === editingId);
+          if (i !== -1) {
+            logs[i].weight = w;
+            logs[i].date = dateStr;
+          }
+        } else {
+          logs.unshift({ id: Date.now(), weight: w, date: dateStr });
+          activeIdx = 0;
+        }
+        closeModal();
+        renderLogs();
+        buildChart();
+        updateDisplay();
+        centerActive();
+      });
+
+      // ─────────────────────────────────────
+      // BACK
+      // ─────────────────────────────────────
+      document.getElementById("backArrow").addEventListener("click", () => {
+        if (document.referrer && document.referrer !== "")
+          window.history.back();
+        else window.location.href = "home.html";
+      });
+
+      // ─────────────────────────────────────
+      // INIT
+      // ─────────────────────────────────────
+      window.addEventListener("load", () => {
+        renderLogs();
+        buildChart();
+        updateDisplay();
+
+        requestAnimationFrame(() => {
+          HANDLE_H = handleRow.offsetHeight;
+          // start closed — no animation
+          setHeight(HANDLE_H, false);
+          requestAnimationFrame(() => centerActive());
+        });
+      });
+    </script>
   </body>
 </html>
