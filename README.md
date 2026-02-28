@@ -15,3 +15,8 @@ Start a local server.
 python3 -m http.server 5500 
 ```
 
+Open:
+
+```text
+http://localhost:5500
+```
