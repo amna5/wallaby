@@ -15,12 +15,13 @@
     <div class="button-wrapper">
       <div class="button-card">
         <h1 class="title">sign up</h1>
-        <form action="#">
+        <form class="signup-form">
           <input
             type="email"
             spellcheck="false"
             placeholder="someone@email.com"
             id="email"
+            name="email"
             required
           />
           <div class="password-field">
@@ -28,6 +29,7 @@
               type="password"
               placeholder="password"
               id="password"
+              name="password"
               required
             />
             <img
@@ -38,8 +40,9 @@
             />
           </div>
 
-          <button class="button-btn">create account</button>
+          <button class="button-btn" type="submit">create account</button>
         </form>
+        <p class="auth-feedback" data-auth-feedback hidden></p>
         <hr class="divider" />
 
         <p class="login">
@@ -62,5 +65,7 @@
         }
       });
     </script>
+    <script type="module" src="./js/auth.js"></script>
+
   </body>
 </html>

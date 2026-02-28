@@ -24,7 +24,7 @@
     <div class="button-wrapper">
       <div class="button-card">
         <h1 class="title">log in</h1>
-        <form action="#">
+        <form class="login-form">
           <input
             type="email"
             spellcheck="false"
@@ -50,22 +50,26 @@
           <div class="row">
             <a href="forgotPassword.html" class="forgot">forgot password?</a>
             <div class="social">
-              <button class="icon"><i class="fa-brands fa-apple"></i></button>
-              <button class="icon">
+              <button class="icon" type="button">
+                <i class="fa-brands fa-apple"></i>
+              </button>
+              <button class="icon" type="button" data-google-signin>
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
                   class="google-logo"
+                  alt="Google logo"
                 />
               </button>
             </div>
           </div>
 
-          <button class="button-btn">log in</button>
+          <button class="button-btn" type="submit">log in</button>
         </form>
+        <p class="auth-feedback" data-auth-feedback hidden></p>
         <hr class="divider" />
 
         <p class="signup">
-          do not have an account? <a href="signUp.html">sign up</a>
+          do not have an account? <a href="create.html">sign up</a>
         </p>
       </div>
     </div>
@@ -82,26 +86,27 @@
           toggle.src = "../img/eye-closed.png";
         }
       });
-      const form = document.querySelector("form");
+      // const form = document.querySelector("form");
 
-      form.addEventListener("submit", (e) => {
-        e.preventDefault(); // stop real submit for now
+      // form.addEventListener("submit", (e) => {
+      //   e.preventDefault(); // stop real submit for now
 
-        const password = passwordInput.value;
+      //   const password = passwordInput.value;
 
-        // Fake rule for now
-        // Replace with real authentication later
-        if (password !== "123456") {
-          passwordInput.classList.add("error");
-        } else {
-          passwordInput.classList.remove("error");
-          alert("Login success (mock)");
-        }
-      });
+      //   // Fake rule for now
+      //   // Replace with real authentication later
+      //   if (password !== "123456") {
+      //     passwordInput.classList.add("error");
+      //   } else {
+      //     passwordInput.classList.remove("error");
+      //     alert("Login success (mock)");
+      //   }
+      // });
 
-      passwordInput.addEventListener("input", () => {
-        passwordInput.classList.remove("error");
-      });
+      // passwordInput.addEventListener("input", () => {
+      //   passwordInput.classList.remove("error");
+      // });
     </script>
+    <script type="module" src="./js/auth.js"></script>
   </body>
 </html>

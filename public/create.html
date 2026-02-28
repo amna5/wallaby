@@ -20,18 +20,31 @@
         <h1 class="title-create">create an account</h1>
         <h5>to save your progress, workouts settings and more.</h5>
 
-        <button class="create-btn apple-btn">
-          Continue with apple
+        <button class="create-btn apple-btn" type="button">
           <i class="fa-brands fa-apple"></i>
+          <span class="btn-text">Continue with Apple</span>
         </button>
-        <button class="create-btn">Continue with Email</button>
 
-        <a href="login.html"
-          ><button class="create-btn" id="last-create">
-            Already have an Account?
-          </button></a
-        >
+        <button class="create-btn google-btn" type="button" data-google-signin>
+          <img
+            class="google-logo"
+            src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+            alt="Google logo"
+          />
+          <span class="btn-text">Continue with Google</span>
+        </button>
+        <p class="auth-feedback" data-auth-feedback hidden></p>
+
+        <a href="signUp.html" class="create-btn no-underline email-btn">
+          <i class="fa-regular fa-envelope"></i>
+          <span class="btn-text">Continue with e-mail</span>
+        </a>
+
+        <a href="login.html" class="create-btn no-underline" id="last-create">
+          <span class="btn-text">Already have an Account?</span>
+        </a>
       </div>
     </div>
+    <script type="module" src="./js/auth.js"></script>
   </body>
 </html>
