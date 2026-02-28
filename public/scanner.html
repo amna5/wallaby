@@ -176,8 +176,8 @@
     </div>
 
 <script>
-// PASTE YOUR REAL API KEY HERE (I REMOVED IT FOR SAFETY!)
-const GEMINI_API_KEY = "YOUR_REAL_API_KEY_HERE";
+// API KEY HERE 
+const GEMINI_API_KEY = "AIzaSyBDAqGzh2z8tKyaAgbmE9GSZ-qIt9CYfr4";
 
 // 1. Initialize the Barcode Scanner
 const html5QrCode = new Html5Qrcode("camera-feed");
@@ -225,7 +225,6 @@ async function fetchFoodData(barcode) {
       const product = data.product;
       const nutriments = product.nutriments || {};
 
-      // FIXED JS BUG: Moved this line OUTSIDE of the showFoodPopup object!
       document.getElementById("ai-verdict-box").style.display = "none";
 
       // Send the real data into your existing popup!
@@ -239,14 +238,12 @@ async function fetchFoodData(barcode) {
         fiber: nutriments.fiber_100g || 0
       });
 
-      // We will also save the ingredients list for Gemini later!
-      window.currentIngredients = product.ingredients_text || "No ingredients listed";
+      // Grab ingredients, but default to a specific phrase if missing
+      window.currentIngredients = product.ingredients_text || "Not found in database";
       console.log("Ingredients for Gemini:", window.currentIngredients);
       
-      // Trigger the AI analysis!
-      if (window.currentIngredients !== "No ingredients listed") {
-          analyzeIngredientsWithAI(product.product_name, window.currentIngredients);
-      }
+      // ALWAYS trigger the AI analysis, even if ingredients are missing!
+      analyzeIngredientsWithAI(product.product_name, window.currentIngredients);
 
     } else {
       alert("Product not found in database!");
@@ -404,7 +401,7 @@ async function analyzeIngredientsWithAI(foodName, ingredients) {
     Keep the response very short, maximum 2 bullet points.
   `;
 
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
   try {
     const verdictBox = document.getElementById("ai-verdict-box");
@@ -424,17 +421,28 @@ async function analyzeIngredientsWithAI(foodName, ingredients) {
     });
 
     const data = await response.json();
+    
+    // NEW: We check if Google sent back an error!
+    if (!response.ok) {
+      console.error("Detailed Google Error:", data);
+      throw new Error(data.error?.message || "Google API rejected the request.");
+    }
+
+    // If it's successful, grab the text
     const aiVerdict = data.candidates[0].content.parts[0].text;
     
-    // FIXED JS BUG: Cleaned up the extra try/catch blocks that broke the code here!
     verdictBox.style.borderLeftColor = "#ff3c3c"; 
     verdictBox.style.background = "rgba(255, 60, 60, 0.15)";
     verdictText.innerHTML = aiVerdict.replace(/\n/g, "<br>");
 
   } catch (error) {
-    console.error("Gemini AI Error:", error);
+    // This safely catches the error without crashing the rest of your app!
+    console.error("Gemini AI Error:", error.message);
     const verdictText = document.getElementById("ai-verdict-text");
-    verdictText.innerHTML = "Could not load AI analysis. Please check connection.";
+    verdictText.innerHTML = `⚠️ API Error: ${error.message}`;
+    
+    const verdictBox = document.getElementById("ai-verdict-box");
+    verdictBox.style.borderLeftColor = "#ffaa00"; // Orange error color
   }
 }
 </script>
