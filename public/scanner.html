@@ -39,7 +39,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="demo-controls">
       <button
         class="demo-btn"
@@ -109,10 +109,11 @@
         id="ai-verdict-box" 
         style="display: none; background: rgba(255, 60, 60, 0.15); border-left: 4px solid #ff3c3c; padding: 12px; margin: 10px 20px; border-radius: 8px; font-size: 0.85em; color: #fff; line-height: 1.4;"
       >
-      <input type="file" id="label-camera-input" accept="image/*" capture="environment" style="display: none;" onchange="processLabelImage(event)">
         <strong style="color: #ff3c3c; display: block; margin-bottom: 4px;">🤖 BiteWise AI Analysis:</strong> 
         <span id="ai-verdict-text">Analyzing ingredients...</span>
       </div>
+
+      <input type="file" id="label-camera-input" accept="image/*" capture="environment" style="display: none;" onchange="processLabelImage(event)">
 
       <div class="nutrient-list">
         <div class="nutrient-row">
@@ -177,32 +178,27 @@
     </div>
 
 <script>
-// API KEY HERE 
-const GEMINI_API_KEY = "API_KEY_HERE";
+// =====================
+// 1. CONFIG & SETUP
+// =====================
+const GEMINI_API_KEY = "AIzaSyA6Bd8nowpO63yI9Zbsql5kgfG2t4a8fz4";
 
-// 1. Initialize the Barcode Scanner
 const html5QrCode = new Html5Qrcode("camera-feed");
 
-// 2. Start the camera and look for barcodes
 function startSmartScanner() {
   html5QrCode.start(
-    { facingMode: "environment" }, // Forces the back camera
+    { facingMode: "environment" }, 
     {
-      fps: 10, // Scans 10 times per second
-      qrbox: { width: 250, height: 150 } // Draws a scanning box
+      fps: 10, 
+      qrbox: { width: 250, height: 150 } 
     },
     (decodedText, decodedResult) => {
-      // SUCCESS! A barcode was found.
       console.log(`Scanned Barcode: ${decodedText}`);
-      
-      // Pause the scanner so it doesn't scan 100 times
       html5QrCode.pause(); 
-      
-      // Send the barcode to our API function
       fetchFoodData(decodedText);
     },
     (errorMessage) => {
-      // It will throw errors constantly while looking for a barcode. We ignore this.
+      // Ignore background scanning errors
     }
   ).catch((err) => {
     console.error("Camera failed to start", err);
@@ -210,25 +206,23 @@ function startSmartScanner() {
   });
 }
 
-// 3. Fetch data from Open Food Facts API
+// =====================
+// 2. DATA FETCHING
+// =====================
 async function fetchFoodData(barcode) {
   try {
-    // Let the user know it's loading (optional, but good UX)
     document.getElementById("food-name").textContent = "Loading...";
     openSheet("food-popup");
 
-    // Call the free Open Food Facts API
     const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
     const data = await response.json();
 
     if (data.status === 1) {
-      // The product exists! Grab the data
       const product = data.product;
       const nutriments = product.nutriments || {};
 
       document.getElementById("ai-verdict-box").style.display = "none";
 
-      // Send the real data into your existing popup!
       showFoodPopup({
         name: product.product_name || "Unknown Product",
         calorie: nutriments['energy-kcal_100g'] || 0,
@@ -239,17 +233,13 @@ async function fetchFoodData(barcode) {
         fiber: nutriments.fiber_100g || 0
       });
 
-      // Grab ingredients, but default to a specific phrase if missing
       window.currentIngredients = product.ingredients_text || "Not found in database";
-      console.log("Ingredients for Gemini:", window.currentIngredients);
-      
-      // ALWAYS trigger the AI analysis, even if ingredients are missing!
       analyzeIngredientsWithAI(product.product_name, window.currentIngredients);
 
     } else {
       alert("Product not found in database!");
       closePopups();
-      html5QrCode.resume(); // Start scanning again
+      html5QrCode.resume(); 
     }
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -258,9 +248,11 @@ async function fetchFoodData(barcode) {
   }
 }
 
-// Start the scanner when the page loads
 startSmartScanner();
 
+// =====================
+// 3. UI & POPUP LOGIC
+// =====================
 document.getElementById("backArrow").addEventListener("click", function () {
   if (document.referrer && document.referrer !== "") {
     window.history.back();
@@ -269,9 +261,6 @@ document.getElementById("backArrow").addEventListener("click", function () {
   }
 });
 
-// =====================
-// Popup state
-// =====================
 let isEditing = false;
 
 function openSheet(id) {
@@ -284,7 +273,6 @@ function closePopups() {
   document.querySelectorAll(".bottom-sheet").forEach((s) => s.classList.remove("open"));
   setEditMode(false);
   
-  // Resume scanner if closed!
   if (typeof html5QrCode !== 'undefined' && html5QrCode.getState() === Html5QrcodeScannerState.PAUSED) {
      html5QrCode.resume();
   }
@@ -295,9 +283,6 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closePopups();
 });
 
-// =====================
-// Edit toggle
-// =====================
 function setEditMode(on) {
   isEditing = on;
   const inputs = document.querySelectorAll("#food-popup .nutrient-row input");
@@ -319,9 +304,6 @@ function toggleEdit() {
   }
 }
 
-// =====================
-// Food Popup API
-// =====================
 function showFoodPopup(data) {
   document.getElementById("food-name").textContent = data.name || "Unknown Food";
   document.getElementById("f-calorie").value = data.calorie ?? 0;
@@ -346,9 +328,6 @@ function showBarcodePopup(data) {
   openSheet("barcode-popup");
 }
 
-// =====================
-// Add handlers
-// =====================
 function addFoodEntry() {
   const entry = {
     name: document.getElementById("food-name").textContent,
@@ -381,7 +360,7 @@ window.showFoodPopup = showFoodPopup;
 window.showBarcodePopup = showBarcodePopup;
 
 // =====================
-// THE GEMINI BRAIN
+// 4. GEMINI AI LOGIC (TEXT & VISION)
 // =====================
 async function analyzeIngredientsWithAI(foodName, ingredients) {
   const userProfile = {
@@ -393,16 +372,17 @@ async function analyzeIngredientsWithAI(foodName, ingredients) {
   const promptText = `
     You are an expert nutritionist. 
     Analyze this food: ${foodName}.
-    Ingredients: ${ingredients}.
+    Ingredients from database: ${ingredients}.
     User Profile: Has ${userProfile.condition}, allergic to ${userProfile.allergy}, prefers ${userProfile.preference}.
     
     Task: 
-    1. Are there any hidden sugars or ingredients bad for their condition?
-    2. Are there any allergy warnings?
+    1. If ingredients are "Not found in database", give a general health warning based ONLY on the food name "${foodName}".
+    2. Otherwise, are there any hidden sugars or ingredients bad for their condition?
+    3. Are there any allergy warnings?
     Keep the response very short, maximum 2 bullet points.
   `;
 
-  const apiUrl = `/.netlify/functions/gemini`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
   try {
     const verdictBox = document.getElementById("ai-verdict-box");
@@ -423,18 +403,17 @@ async function analyzeIngredientsWithAI(foodName, ingredients) {
 
     const data = await response.json();
     
-    // NEW: We check if Google sent back an error!
     if (!response.ok) {
       console.error("Detailed Google Error:", data);
       throw new Error(data.error?.message || "Google API rejected the request.");
     }
 
-    // If it's successful, grab the text
     const aiVerdict = data.candidates[0].content.parts[0].text;
     
     verdictBox.style.borderLeftColor = "#ff3c3c"; 
     verdictBox.style.background = "rgba(255, 60, 60, 0.15)";
-    // If ingredients were missing, add a button to launch the camera!
+    
+    // Inject the fallback camera button if ingredients are missing!
     if (ingredients === "Not found in database") {
       verdictText.innerHTML = aiVerdict.replace(/\n/g, "<br>") + 
       `<br><br><button onclick="document.getElementById('label-camera-input').click()" style="background: #E1FF00; color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">📷 Scan Ingredient Label</button>`;
@@ -443,27 +422,22 @@ async function analyzeIngredientsWithAI(foodName, ingredients) {
     }
 
   } catch (error) {
-    // This safely catches the error without crashing the rest of your app!
     console.error("Gemini AI Error:", error.message);
     const verdictText = document.getElementById("ai-verdict-text");
     verdictText.innerHTML = `⚠️ API Error: ${error.message}`;
     
     const verdictBox = document.getElementById("ai-verdict-box");
-    verdictBox.style.borderLeftColor = "#ffaa00"; // Orange error color
+    verdictBox.style.borderLeftColor = "#ffaa00"; 
   }
 }
 
-// =====================
-// MULTIMODAL VISION: The Hidden Decoder
-// =====================
+// === MULTIMODAL VISION SYSTEM ===
 function processLabelImage(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  // Read the image file so we can send it to Gemini
   const reader = new FileReader();
   reader.onload = function(e) {
-    // Gemini needs just the raw data string, so we split off the prefix
     const base64String = e.target.result.split(',')[1];
     const mimeType = file.type;
     const foodName = document.getElementById("food-name").textContent;
@@ -491,7 +465,7 @@ async function analyzeImageWithAI(foodName, base64String, mimeType) {
     Keep the response very short, maximum 3 bullet points.
   `;
 
-  const apiUrl = `/.netlify/functions/gemini`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
   try {
     const verdictBox = document.getElementById("ai-verdict-box");
@@ -501,7 +475,6 @@ async function analyzeImageWithAI(foodName, base64String, mimeType) {
     verdictBox.style.background = "rgba(225, 255, 0, 0.1)";
     verdictText.innerHTML = "<em>👀 Reading the label and decoding scientific names...</em>";
     
-    // Notice how we send BOTH text and image data (inlineData) to Gemini 2.5!
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
