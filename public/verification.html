@@ -16,109 +16,32 @@
       <div class="button-card">
         <div style="padding-bottom: 90px; top: -90px">
           <h1 class="title" style="line-height: 1.1; padding-bottom: 20px">
-            verification
+            check <br />your email
           </h1>
-          <form action="#" autocomplete="off">
-            <div class="otp-container">
-              <input
-                type="text"
-                inputmode="numeric"
-                pattern="[0-9]*"
-                maxlength="1"
-                class="otp"
-                autocomplete="one-time-code"
-              />
-              <input
-                type="text"
-                inputmode="numeric"
-                pattern="[0-9]*"
-                maxlength="1"
-                class="otp"
-              />
-              <input
-                type="text"
-                inputmode="numeric"
-                pattern="[0-9]*"
-                maxlength="1"
-                class="otp"
-              />
-              <input
-                type="text"
-                inputmode="numeric"
-                pattern="[0-9]*"
-                maxlength="1"
-                class="otp"
-              />
-              <input
-                type="text"
-                inputmode="numeric"
-                pattern="[0-9]*"
-                maxlength="1"
-                class="otp"
-              />
-            </div>
-
-            <h5
-              style="
-                text-align: left;
-                padding-bottom: 100px;
-
-                font-size: 0.85rem;
-              "
-            >
-              enter the five digit code sent to your email.
-              <a href="#" class="resend-link">resend code</a>
+          <div class="verification-message">
+            <h5 style="text-align: left; padding-bottom: 24px; font-size: 0.9rem">
+              We sent a password reset link to
+              <span id="resetEmail">your email address</span>.
+            </h5>
+            <h5 style="text-align: left; padding-bottom: 100px; font-size: 0.85rem">
+              Open the email and follow the reset link to set a new password.
+              If you do not see it, check your spam folder and try again.
             </h5>
 
-            <button class="confirm-btn">confirm</button>
-          </form>
+            <a href="forgotPassword.html" class="confirm-btn no-underline">
+              send another link
+            </a>
+          </div>
         </div>
       </div>
     </div>
     <script>
-      const inputs = document.querySelectorAll(".otp");
-      const button = document.querySelector(".confirm-btn");
+      const email = new URLSearchParams(window.location.search).get("email");
+      const emailText = document.getElementById("resetEmail");
 
-      // auto move + digits only
-      inputs.forEach((input, index) => {
-        input.addEventListener("input", () => {
-          input.value = input.value.replace(/[^0-9]/g, "");
-
-          if (input.value && index < inputs.length - 1) {
-            inputs[index + 1].focus();
-          }
-
-          input.classList.remove("error");
-        });
-
-        input.addEventListener("keydown", (e) => {
-          if (e.key === "Backspace" && !input.value && index > 0) {
-            inputs[index - 1].focus();
-          }
-        });
-      });
-
-      // confirm button
-      button.addEventListener("click", (e) => {
-        e.preventDefault();
-
-        let code = "";
-        inputs.forEach((input) => {
-          code += input.value;
-        });
-
-        if (code !== "12345") {
-          inputs.forEach((input) => input.classList.add("error"));
-        } else {
-          // success → redirect
-          button.textContent = "verified ✓";
-          button.disabled = true;
-
-          setTimeout(() => {
-            window.location.href = "resetPassword.html";
-          }, 500);
-        }
-      });
+      if (email) {
+        emailText.textContent = email;
+      }
     </script>
   </body>
 </html>

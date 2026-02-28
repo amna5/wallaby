@@ -18,7 +18,7 @@
     <div class="app">
       <div class="adjust">
         <div class="header">
-          <img src="../img/arrow.svg" alt="arrow" id="backArrow" />
+          <img src="img/arrow.svg" alt="arrow" id="backArrow" />
           <h1>Settings</h1>
         </div>
 
@@ -44,12 +44,16 @@
         </div>
 
         <!-- Log Out Card -->
-        <div class="settings-card settings-card-row" onclick="handleLogout()">
+        <button
+          class="settings-card settings-card-row"
+          type="button"
+          data-logout
+        >
           <!-- Log Out -->
           <div class="settings-card-header">
             <div style="display: flex; align-items: center; gap: 10px">
               <img
-                src="../img/logout.svg"
+                src="img/logout.svg"
                 alt="logout"
                 style="width: 25px; height: 25px; filter: invert(1)"
               />
@@ -57,7 +61,7 @@
             </div>
             <i class="fa fa-chevron-right" style="color: white"></i>
           </div>
-        </div>
+        </button>
       </div>
     </div>
 
@@ -204,10 +208,7 @@
         }
         closeIllnessModal();
       }
-
-      function handleLogout() {
-        window.location.href = "login.html";
-      }
     </script>
+    <script type="module" src="./js/auth.js"></script>
   </body>
 </html>

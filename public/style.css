@@ -262,6 +262,30 @@ input {
     0 12px 28px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
 }
+
+.auth-feedback {
+  margin: 14px 0 0;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #243000;
+}
+
+.auth-feedback.error {
+  color: #8b0000;
+}
+
+.auth-feedback {
+  margin: 14px 0 0;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #243000;
+}
+
+.auth-feedback.error {
+  color: #8b0000;
+}
 .signup {
   text-align: left;
   font-size: 0.8rem;
@@ -371,21 +395,59 @@ input.error {
 .create-btn {
   width: 100%;
   padding: 14px;
-  margin: 8px;
+  margin: 8px 0; /* better than 8px all sides */
   border-radius: 999px;
   border: none;
   font-size: 1.2rem;
-  
   font-family: 'Inter', sans-serif;
-  text-shadow: 0px 4px 3px rgba(0, 0, 0, 0.18);
-
   cursor: pointer;
   background-color: white;
   box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.3);
-  transition: 
-    transform 0.25s ease,
-    box-shadow 0.25s ease; 
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;   /* so <a class="create-btn"> no underline */
+  color: black;
 }
+
+.create-btn .btn-text {
+  width: 100%;
+  text-align: center;
+  display: block;
+  line-height: 1.2;
+}
+
+.apple-btn .fa-apple,
+.google-btn .google-logo {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.apple-btn .fa-apple {
+  font-size: 1.7rem;
+  text-shadow: none;
+}
+
+.google-btn .google-logo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.email-btn .fa-envelope {
+  position: absolute;
+  left: 26px;   /* try 26px–32px */
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+}
+
 
 .create-btn:hover {
   box-shadow: 
@@ -394,8 +456,12 @@ input.error {
 
 #last-create{
   background-color: #969696;
+  
 }
-
+.no-underline {
+  text-decoration: none;
+  color: inherit;
+}
 .title-create{
   text-align: center;
   font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -412,18 +478,7 @@ h5{
   font-weight: 100;
 }
 
-.apple-btn {
-  position: relative;
-}
 
-.apple-btn .fa-apple {
-  position: absolute;
-  left: 24px;          /* adjust horizontally */
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.7rem;
-  text-shadow: none;
-}
 
 .confirm-btn {
   width: 100%;
