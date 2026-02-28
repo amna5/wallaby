@@ -4,31 +4,1660 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Food Log</title>
-    <link rel="stylesheet" href="inside.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <style>
+      :root {
+        --bg: #000;
+        --panel: #101113;
+        --panel-soft: #18191d;
+        --panel-muted: #22242a;
+        --line: rgba(255, 255, 255, 0.06);
+        --text: #fff;
+        --muted: #8e929d;
+        --accent: #afc500;
+        --accent-deep: #7f9000;
+        --danger: #ff4f4f;
+        --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(
+            circle at top,
+            rgba(175, 197, 0, 0.08),
+            transparent 28%
+          ),
+          linear-gradient(180deg, #060606 0%, #000 100%);
+        color: var(--text);
+        font-family: "Montserrat", sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .page {
+        max-width: 1320px;
+        margin: 0 auto;
+        min-height: 100vh;
+        padding: 28px 28px 40px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 28px;
+        margin-top: 3px;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .header img {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      .back-btn {
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        font-size: 1.2rem;
+      }
+
+      h1 {
+        margin: 0;
+
+        font-weight: 700;
+      }
+
+      .profile-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 60px;
+        padding-right: 5px;
+        margin-left: auto;
+      }
+
+      .profile-btn {
+        position: relative;
+        z-index: 1;
+        background-color: black;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+      }
+
+      .profile-btn:hover {
+        transform: scale(1.08);
+      }
+
+      .profile-btn img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .settings-chip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #1c1c1c;
+        color: white;
+        font-weight: 700;
+        font-size: 15px;
+        padding: 6px 14px;
+        border-radius: 9px;
+        border: 2px solid #262626;
+        margin-top: -14px;
+        z-index: 2;
+        white-space: nowrap;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+      }
+
+      .settings-chip:hover {
+        transform: scale(1.06);
+      }
+
+      .settings-chip img {
+        width: 18px;
+        height: 18px;
+      }
+
+      .panel {
+        background: linear-gradient(
+          180deg,
+          rgba(19, 20, 24, 0.96),
+          rgba(10, 11, 13, 0.98)
+        );
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero-panel {
+        max-width: 940px;
+        margin: 0 auto 24px;
+        padding: 28px;
+        width: 100%;
+      }
+
+      .month-label {
+        margin: 0 0 12px;
+        text-align: center;
+        color: #70737e;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+      }
+
+      .days-row {
+        display: grid;
+        grid-template-columns: 30px repeat(7, 1fr) 30px;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 28px;
+      }
+
+      .arrow-day,
+      .day-pill {
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .arrow-day {
+        font-size: 1.5rem;
+      }
+
+      .day-pill {
+        padding: 10px 6px;
+        border-radius: 18px;
+        display: grid;
+        gap: 3px;
+        justify-items: center;
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease;
+      }
+
+      .day-pill span:first-child {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: lowercase;
+      }
+
+      .day-pill span:last-child {
+        font-size: 1rem;
+        font-weight: 800;
+      }
+
+      .day-pill.active {
+        background: rgba(175, 197, 0, 0.85);
+      }
+
+      .day-pill:hover {
+        transform: translateY(-2px);
+      }
+
+      .hero-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .ring-wrap {
+        position: relative;
+        width: min(100%, 300px);
+        margin: 0 auto;
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+      }
+
+      .ring {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, #080808 0 54%, transparent 55%),
+          conic-gradient(
+            from 0deg,
+            var(--accent) 0turn,
+            #b5cb00 calc(var(--progress) * 1turn),
+            var(--accent-deep) calc(var(--progress) * 1turn),
+            var(--accent-deep) 1turn
+          );
+        box-shadow:
+          inset 0 0 0 24px rgba(0, 0, 0, 0.44),
+          0 0 40px rgba(175, 197, 0, 0.12);
+      }
+
+      .ring::after {
+        content: "";
+        position: absolute;
+        inset: 34px;
+        border-radius: 50%;
+        background:
+          radial-gradient(
+            circle at 50% 24%,
+            rgba(255, 255, 255, 0.05),
+            transparent 36%
+          ),
+          #090909;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+
+      .ring-copy {
+        position: absolute;
+        text-align: center;
+        z-index: 1;
+      }
+
+      .ring-copy strong {
+        display: block;
+        font-size: clamp(2rem, 3vw, 3rem);
+        font-weight: 800;
+        letter-spacing: -0.05em;
+      }
+
+      .ring-copy span {
+        color: #b7bac2;
+        font-weight: 500;
+      }
+
+      .log-panel {
+        max-width: 940px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+        background: #111;
+        border-radius: 20px 20px 0 0;
+        transition: height 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+
+      .log-head h3 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .log-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 22px 12px;
+      }
+
+      .log-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .ghost-link {
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--text);
+        padding: 10px 16px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .add-btn {
+        width: 50px;
+        height: 50px;
+        border: 0;
+        border-radius: 50%;
+        background: #fff;
+        color: #000;
+        cursor: pointer;
+        font-size: 2rem;
+        line-height: 1;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .entries {
+        display: grid;
+        gap: 0;
+        padding-bottom: 18px;
+      }
+
+      .entry {
+        position: relative;
+        display: grid;
+        grid-template-columns:
+          72px minmax(0, 1.2fr) repeat(2, minmax(110px, 0.5fr))
+          36px;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 22px;
+        border-bottom: 1px solid #1a1a1a;
+      }
+
+      .entry:last-child {
+        border-bottom: 0;
+      }
+
+      .thumb {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        background:
+          linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.08),
+            rgba(255, 255, 255, 0.02)
+          ),
+          #3a3b41;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .thumb::before {
+        content: "";
+        position: absolute;
+        left: 20px;
+        bottom: 18px;
+        width: 30px;
+        height: 18px;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.26);
+      }
+
+      .thumb::after {
+        content: "";
+        position: absolute;
+        left: 27px;
+        bottom: 26px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.34);
+        box-shadow: 10px 4px 0 8px rgba(0, 0, 0, 0.22);
+      }
+
+      .entry-main strong,
+      .entry-stat strong {
+        display: block;
+        font-weight: 700;
+      }
+
+      .entry-main strong {
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+
+      .entry-main span,
+      .entry-stat span {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .entry-stat {
+        text-align: right;
+      }
+
+      .entry-stat strong {
+        font-size: 1.15rem;
+      }
+
+      .entry-stat.calories strong {
+        color: #d8ec47;
+      }
+
+      .entry-stat.calories strong::before {
+        content: "";
+        display: inline-block;
+        width: 9px;
+        height: 13px;
+        margin-right: 7px;
+        background: linear-gradient(180deg, #f2ff5d 0%, #d8ee00 100%);
+        clip-path: polygon(50% 0, 100% 42%, 67% 100%, 0 55%);
+      }
+
+      .more-btn {
+        width: 36px;
+        height: 36px;
+        border: 0;
+        border-radius: 12px;
+        background: transparent;
+        color: #b9bbc2;
+        cursor: pointer;
+        font-size: 1.3rem;
+      }
+
+      .context-menu {
+        position: absolute;
+        right: 56px;
+        top: 18px;
+        min-width: 110px;
+        background: #1c1c1e;
+        border: 1px solid #2a2a2a;
+        border-radius: 14px;
+        overflow: hidden;
+        z-index: 6;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.48);
+        display: none;
+      }
+
+      .context-menu.active {
+        display: block;
+      }
+
+      .menu-row {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 14px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .menu-row + .menu-row {
+        border-top: 1px solid #2a2a2a;
+      }
+
+      .menu-row.delete {
+        color: var(--danger);
+      }
+
+      .sheet-handle-row.static-handle {
+        display: flex;
+        justify-content: center;
+        padding: 10px 0 10px;
+        cursor: pointer;
+        touch-action: none;
+        user-select: none;
+      }
+
+      .sheet-handle-row.static-handle:hover .sheet-handle {
+        background: #b8b8b8;
+      }
+
+      .sheet-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-height: 0;
+      }
+
+      .sheet-fab-wrap {
+        padding: 0 22px 22px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .overlay-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.72);
+        z-index: 100;
+        backdrop-filter: blur(6px);
+      }
+
+      .overlay-backdrop.active {
+        display: block;
+      }
+
+      .bottom-sheet {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%) translateY(100%);
+        width: min(920px, calc(100vw - 32px));
+        background: #15161a;
+        border-radius: 28px 28px 0 0;
+        z-index: 200;
+        transition: transform 0.36s cubic-bezier(0.32, 0.72, 0, 1);
+        padding: 0 0 28px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 0;
+        box-shadow: 0 -24px 80px rgba(0, 0, 0, 0.65);
+      }
+
+      .bottom-sheet.open {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .sheet-handle-row {
+        display: flex;
+        justify-content: center;
+        padding: 12px 0 18px;
+      }
+
+      .sheet-handle {
+        width: 72px;
+        height: 6px;
+        border-radius: 999px;
+        background: #fff;
+      }
+
+      .sheet-inner {
+        padding: 0 26px;
+      }
+
+      .sheet-title {
+        text-align: center;
+        margin-bottom: 18px;
+      }
+
+      .sheet-title h2 {
+        margin: 0;
+        font-size: 1.15rem;
+      }
+
+      .search-field,
+      .custom-field,
+      .inline-input,
+      .servings-input {
+        width: 100%;
+        border: 0;
+        border-radius: 12px;
+        background: #23252b;
+        color: var(--text);
+        outline: none;
+      }
+
+      .search-field,
+      .custom-field {
+        padding: 14px 16px;
+        margin-bottom: 12px;
+      }
+
+      .search-field::placeholder,
+      .custom-field::placeholder,
+      .inline-input::placeholder,
+      .servings-input::placeholder {
+        color: #6f7480;
+      }
+
+      .sheet-divider {
+        height: 2px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        margin: 8px 0 16px;
+      }
+
+      .search-results {
+        display: grid;
+        gap: 10px;
+        min-height: 160px;
+        align-content: start;
+      }
+
+      .result-btn {
+        border: 0;
+        border-radius: 12px;
+        background: #ececef;
+        color: #070708;
+        padding: 12px 14px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+      }
+
+      .empty-state {
+        min-height: 140px;
+        display: grid;
+        place-items: center;
+        color: #696d76;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .nutrition-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+        margin-bottom: 18px;
+      }
+
+      .field-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.84rem;
+        font-weight: 700;
+        color: #d6d8de;
+      }
+
+      .inline-input,
+      .servings-input {
+        padding: 11px 12px;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      .serving-row {
+        display: grid;
+        justify-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+
+      .serving-row h3,
+      .kcal-preview {
+        margin: 0;
+      }
+
+      .servings-input {
+        width: 180px;
+      }
+
+      .kcal-preview {
+        font-size: 1.7rem;
+        font-weight: 800;
+      }
+
+      .sheet-actions {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        margin-top: 10px;
+      }
+
+      .sheet-btn {
+        min-width: 180px;
+        border: 0;
+        border-radius: 999px;
+        padding: 14px 22px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .sheet-btn.primary {
+        background: #ececef;
+        color: #070708;
+      }
+
+      .sheet-btn.secondary {
+        background: #2a2c32;
+        color: #c0c2c9;
+      }
+
+      @media (max-width: 980px) {
+        .page {
+          padding: 20px 16px 32px;
+        }
+
+        .hero-panel,
+        .log-panel {
+          max-width: none;
+        }
+
+        .entry {
+          grid-template-columns: 72px 1fr;
+        }
+
+        .entry-stat,
+        .more-btn {
+          text-align: left;
+        }
+
+        .context-menu {
+          top: 76px;
+          right: 18px;
+        }
+
+        .nutrition-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .sheet-actions {
+          flex-direction: column;
+        }
+
+        .sheet-btn {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div class="app">
-      <div class="adjust">
-        <div class="header">
-          <img src="../img/arrow.svg" alt="arrow" id="backArrow" />
-          <h1>Food Log</h1>
-          <div class="profile-wrapper">
-            <button class="profile-btn">
-              <img src="../img/profile_logo.svg" alt="Profile" />
-            </button>
-            <a href="settings.html" class="settings-chip">
-              <img src="../img/settings.svg" alt="Settings" />
-              settings
-            </a>
-          </div>
+    <div class="page">
+      <div class="header">
+        <img src="../img/arrow.svg" alt="arrow" id="backArrow" />
+        <h1>Food Log</h1>
+        <div class="profile-wrapper">
+          <button class="profile-btn">
+            <img src="../img/profile_logo.svg" alt="Profile" />
+          </button>
+          <a href="settings.html" class="settings-chip">
+            <img src="../img/settings.svg" alt="Settings" />
+            settings
+          </a>
         </div>
       </div>
+
+      <section class="panel hero-panel">
+        <p class="month-label">MARCH</p>
+        <div class="days-row">
+          <button class="arrow-day" type="button" aria-label="Previous days">
+            ‹
+          </button>
+          <button class="day-pill" type="button">
+            <span>mon</span><span>24</span>
+          </button>
+          <button class="day-pill" type="button">
+            <span>tue</span><span>25</span>
+          </button>
+          <button class="day-pill" type="button">
+            <span>wed</span><span>26</span>
+          </button>
+          <button class="day-pill active" type="button">
+            <span>thu</span><span>27</span>
+          </button>
+          <button class="day-pill" type="button">
+            <span>fri</span><span>28</span>
+          </button>
+          <button class="day-pill" type="button">
+            <span>sat</span><span>29</span>
+          </button>
+          <button class="day-pill" type="button">
+            <span>sun</span><span>31</span>
+          </button>
+          <button class="arrow-day" type="button" aria-label="Next days">
+            ›
+          </button>
+        </div>
+
+        <div class="hero-content">
+          <div class="ring-wrap">
+            <div class="ring" id="progressRing" style="--progress: 0.5"></div>
+            <div class="ring-copy">
+              <strong id="consumedCalories">1250</strong>
+              <span>/2500 kcal</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel log-panel">
+        <div class="sheet-handle-row static-handle" id="logSheetHandle">
+          <div class="sheet-handle"></div>
+        </div>
+        <div class="sheet-body" id="logSheetBody">
+          <div class="log-head">
+            <h3>Logged meals</h3>
+            <div class="log-actions">
+              <button class="ghost-link" type="button">view all</button>
+            </div>
+          </div>
+
+          <div class="entries" id="entries"></div>
+          <div class="sheet-fab-wrap">
+            <button
+              class="add-btn"
+              id="openSearchSheetBottom"
+              type="button"
+              aria-label="Add food"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
+
+    <div class="overlay-backdrop" id="overlayBackdrop"></div>
+
+    <section class="bottom-sheet" id="searchSheet" aria-hidden="true">
+      <div class="sheet-handle-row"><div class="sheet-handle"></div></div>
+      <div class="sheet-inner">
+        <div class="sheet-title">
+          <h2>new entry</h2>
+        </div>
+        <input
+          class="search-field"
+          id="searchInput"
+          type="text"
+          placeholder="Search for food..."
+          autocomplete="off"
+        />
+        <div class="sheet-divider"></div>
+        <input
+          class="custom-field"
+          id="customInput"
+          type="text"
+          placeholder="Custom..."
+          autocomplete="off"
+        />
+        <div class="search-results" id="searchResults"></div>
+        <div class="sheet-actions">
+          <button class="sheet-btn primary" id="saveSearch" type="button">
+            save
+          </button>
+          <button class="sheet-btn secondary" id="cancelSearch" type="button">
+            cancel
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom-sheet" id="detailSheet" aria-hidden="true">
+      <div class="sheet-handle-row"><div class="sheet-handle"></div></div>
+      <div class="sheet-inner">
+        <div class="sheet-title">
+          <h2 id="detailTitle">food details</h2>
+        </div>
+
+        <div class="nutrition-grid">
+          <div class="field-group">
+            <label for="calorieInput">calorie</label>
+            <input
+              class="inline-input"
+              id="calorieInput"
+              type="number"
+              min="0"
+            />
+          </div>
+          <div class="field-group">
+            <label for="proteinInput">protein(g)</label>
+            <input
+              class="inline-input"
+              id="proteinInput"
+              type="number"
+              min="0"
+            />
+          </div>
+          <div class="field-group">
+            <label for="sugarInput">sugar(g)</label>
+            <input class="inline-input" id="sugarInput" type="number" min="0" />
+          </div>
+          <div class="field-group">
+            <label for="sodiumInput">sodium(g)</label>
+            <input
+              class="inline-input"
+              id="sodiumInput"
+              type="number"
+              min="0"
+            />
+          </div>
+          <div class="field-group">
+            <label for="fatInput">fat(g)</label>
+            <input class="inline-input" id="fatInput" type="number" min="0" />
+          </div>
+          <div class="field-group">
+            <label for="fiberInput">fiber(g)</label>
+            <input class="inline-input" id="fiberInput" type="number" min="0" />
+          </div>
+          <div class="field-group">
+            <label for="servingSizeInput">Serving Size</label>
+            <input class="inline-input" id="servingSizeInput" type="text" />
+          </div>
+          <div class="field-group">
+            <label for="gramsInput">Weight(g)</label>
+            <input class="inline-input" id="gramsInput" type="number" min="1" />
+          </div>
+        </div>
+
+        <div class="serving-row">
+          <h3>Servings</h3>
+          <input
+            class="servings-input"
+            id="servingsInput"
+            type="number"
+            min="1"
+            step="1"
+            placeholder="how many servings?"
+          />
+          <p class="kcal-preview" id="kcalPreview">0 kcal</p>
+        </div>
+
+        <div class="sheet-actions">
+          <button class="sheet-btn primary" id="saveDetail" type="button">
+            log food
+          </button>
+          <button class="sheet-btn secondary" id="cancelDetail" type="button">
+            cancel
+          </button>
+        </div>
+      </div>
+    </section>
+
     <script>
+      const calorieGoal = 2500;
+      const foodLibrary = [
+        {
+          name: "Roti Canai",
+          grams: 200,
+          calorie: 500,
+          protein: 5,
+          sugar: 2,
+          sodium: 1,
+          fat: 18,
+          fiber: 2,
+          servingSize: "1 plate",
+        },
+        {
+          name: "Chicken Satay",
+          grams: 200,
+          calorie: 600,
+          protein: 5,
+          sugar: 0,
+          sodium: 2,
+          fat: 22,
+          fiber: 0,
+          servingSize: "200g",
+        },
+        {
+          name: "Fruit Bowl",
+          grams: 200,
+          calorie: 150,
+          protein: 4,
+          sugar: 0,
+          sodium: 1,
+          fat: 6,
+          fiber: 0,
+          servingSize: "200g",
+        },
+        {
+          name: "Chicken Rice",
+          grams: 280,
+          calorie: 650,
+          protein: 28,
+          sugar: 4,
+          sodium: 3,
+          fat: 18,
+          fiber: 2,
+          servingSize: "1 bowl",
+        },
+        {
+          name: "Miso Salmon",
+          grams: 180,
+          calorie: 430,
+          protein: 33,
+          sugar: 3,
+          sodium: 2,
+          fat: 16,
+          fiber: 1,
+          servingSize: "180g",
+        },
+      ];
+
+      const dailyLogs = {
+        24: [
+          {
+            id: 241,
+            name: "Miso Salmon",
+            grams: 180,
+            calorie: 430,
+            protein: 33,
+            sugar: 3,
+            sodium: 2,
+            fat: 16,
+            fiber: 1,
+            servingSize: "180g",
+            servings: 1,
+          },
+        ],
+        25: [
+          {
+            id: 251,
+            name: "Chicken Rice",
+            grams: 280,
+            calorie: 650,
+            protein: 28,
+            sugar: 4,
+            sodium: 3,
+            fat: 18,
+            fiber: 2,
+            servingSize: "1 bowl",
+            servings: 1,
+          },
+          {
+            id: 252,
+            name: "Fruit Bowl",
+            grams: 200,
+            calorie: 150,
+            protein: 4,
+            sugar: 0,
+            sodium: 1,
+            fat: 6,
+            fiber: 0,
+            servingSize: "200g",
+            servings: 1,
+          },
+        ],
+        26: [
+          {
+            id: 261,
+            name: "Chicken Satay",
+            grams: 200,
+            calorie: 600,
+            protein: 5,
+            sugar: 0,
+            sodium: 2,
+            fat: 22,
+            fiber: 0,
+            servingSize: "200g",
+            servings: 1,
+          },
+        ],
+        27: [
+          {
+            id: 271,
+            name: "Roti Canai",
+            grams: 200,
+            calorie: 500,
+            protein: 5,
+            sugar: 2,
+            sodium: 1,
+            fat: 18,
+            fiber: 2,
+            servingSize: "1 plate",
+            servings: 1,
+          },
+          {
+            id: 272,
+            name: "Chicken Satay",
+            grams: 200,
+            calorie: 600,
+            protein: 5,
+            sugar: 0,
+            sodium: 2,
+            fat: 22,
+            fiber: 0,
+            servingSize: "200g",
+            servings: 1,
+          },
+          {
+            id: 273,
+            name: "Fruit Bowl",
+            grams: 200,
+            calorie: 150,
+            protein: 4,
+            sugar: 0,
+            sodium: 1,
+            fat: 6,
+            fiber: 0,
+            servingSize: "200g",
+            servings: 1,
+          },
+        ],
+        28: [
+          {
+            id: 281,
+            name: "Chicken Rice",
+            grams: 280,
+            calorie: 650,
+            protein: 28,
+            sugar: 4,
+            sodium: 3,
+            fat: 18,
+            fiber: 2,
+            servingSize: "1 bowl",
+            servings: 1,
+          },
+          {
+            id: 282,
+            name: "Miso Salmon",
+            grams: 180,
+            calorie: 430,
+            protein: 33,
+            sugar: 3,
+            sodium: 2,
+            fat: 16,
+            fiber: 1,
+            servingSize: "180g",
+            servings: 1,
+          },
+        ],
+        29: [
+          {
+            id: 291,
+            name: "Fruit Bowl",
+            grams: 200,
+            calorie: 150,
+            protein: 4,
+            sugar: 0,
+            sodium: 1,
+            fat: 6,
+            fiber: 0,
+            servingSize: "200g",
+            servings: 2,
+          },
+        ],
+        31: [],
+      };
+
+      const entriesEl = document.getElementById("entries");
+      const overlayBackdrop = document.getElementById("overlayBackdrop");
+      const searchSheet = document.getElementById("searchSheet");
+      const detailSheet = document.getElementById("detailSheet");
+      const logSheet = document.querySelector(".log-panel");
+      const logSheetHandle = document.getElementById("logSheetHandle");
+      const logSheetBody = document.getElementById("logSheetBody");
+      const searchInput = document.getElementById("searchInput");
+      const customInput = document.getElementById("customInput");
+      const searchResults = document.getElementById("searchResults");
+      const detailTitle = document.getElementById("detailTitle");
+      const kcalPreview = document.getElementById("kcalPreview");
+      const saveDetailBtn = document.getElementById("saveDetail");
+      const dayPills = document.querySelectorAll(".day-pill");
+
+      const inputs = {
+        calorie: document.getElementById("calorieInput"),
+        protein: document.getElementById("proteinInput"),
+        sugar: document.getElementById("sugarInput"),
+        sodium: document.getElementById("sodiumInput"),
+        fat: document.getElementById("fatInput"),
+        fiber: document.getElementById("fiberInput"),
+        servingSize: document.getElementById("servingSizeInput"),
+        grams: document.getElementById("gramsInput"),
+        servings: document.getElementById("servingsInput"),
+      };
+
+      let currentDateKey = "27";
+      let selectedFood = null;
+      let editEntryId = null;
+      let activeMenuId = null;
+      let activePopupSheet = null;
+      let filteredFoods = [...foodLibrary];
+      let logSheetOpen = false;
+      let logSheetHandleHeight = 0;
+      let logSheetDragActive = false;
+      let logSheetDragStartY = 0;
+      let logSheetDragStartH = 0;
+      let logSheetSuppressClick = false;
+      let logSheetOpenHeight = 0;
+
+      function getCurrentEntries() {
+        return dailyLogs[currentDateKey] ?? [];
+      }
+
+      function renderEntries() {
+        const entries = getCurrentEntries();
+        if (!entries.length) {
+          entriesEl.innerHTML =
+            '<div class="empty-state" style="min-height:180px;">No meals logged for this date</div>';
+          updateDashboard();
+          syncLogSheet();
+          return;
+        }
+
+        entriesEl.innerHTML = entries
+          .map((entry) => {
+            const totalCalories = entry.calorie * entry.servings;
+            const totalProtein = entry.protein * entry.servings;
+
+            return `
+              <article class="entry">
+                <div class="thumb" aria-hidden="true"></div>
+                <div class="entry-main">
+                  <strong>${entry.name}</strong>
+                  <span>${entry.grams} gram · ${entry.servingSize}</span>
+                </div>
+                <div class="entry-stat">
+                  <strong>${totalProtein}g</strong>
+                  <span>protein</span>
+                </div>
+                <div class="entry-stat calories">
+                  <strong>${totalCalories}</strong>
+                  <span>calories</span>
+                </div>
+                <button class="more-btn" type="button" data-menu-id="${entry.id}">⋮</button>
+                <div class="context-menu${activeMenuId === entry.id ? " active" : ""}">
+                  <button class="menu-row" type="button" data-edit-id="${entry.id}">edit</button>
+                  <button class="menu-row delete" type="button" data-delete-id="${entry.id}">delete</button>
+                </div>
+              </article>
+            `;
+          })
+          .join("");
+
+        updateDashboard();
+        syncLogSheet();
+      }
+
+      function updateDashboard() {
+        const totals = getCurrentEntries().reduce(
+          (acc, entry) => {
+            acc.calories += entry.calorie * entry.servings;
+            return acc;
+          },
+          { calories: 0 },
+        );
+
+        const progress = Math.min(totals.calories / calorieGoal, 1);
+        document
+          .getElementById("progressRing")
+          .style.setProperty("--progress", progress);
+        document.getElementById("consumedCalories").textContent =
+          totals.calories;
+      }
+
+      function setLogSheetHeight(height, animate) {
+        if (!animate) {
+          logSheet.style.transition = "none";
+        }
+
+        logSheet.style.height = `${height}px`;
+
+        if (!animate) {
+          requestAnimationFrame(() => {
+            logSheet.style.transition = "";
+          });
+        }
+      }
+
+      function openLogSheet() {
+        logSheetOpen = true;
+        setLogSheetHeight(logSheetOpenHeight, true);
+      }
+
+      function closeLogSheet() {
+        logSheetOpen = false;
+        setLogSheetHeight(logSheetHandleHeight, true);
+      }
+
+      function syncLogSheet(forceOpen = false) {
+        logSheetHandleHeight = logSheetHandle.offsetHeight;
+        logSheetOpenHeight = logSheetHandleHeight + logSheetBody.scrollHeight;
+
+        if (forceOpen) {
+          openLogSheet();
+          return;
+        }
+
+        if (logSheetOpen) {
+          openLogSheet();
+        } else {
+          setLogSheetHeight(logSheetHandleHeight, false);
+        }
+      }
+
+      function openSheet(sheet) {
+        activeMenuId = null;
+        renderEntries();
+        overlayBackdrop.classList.add("active");
+        [searchSheet, detailSheet].forEach((item) => {
+          item.classList.remove("open");
+          item.setAttribute("aria-hidden", "true");
+        });
+        activePopupSheet = sheet;
+        sheet.classList.add("open");
+        sheet.setAttribute("aria-hidden", "false");
+      }
+
+      function closeSheets() {
+        overlayBackdrop.classList.remove("active");
+        [searchSheet, detailSheet].forEach((item) => {
+          item.classList.remove("open");
+          item.setAttribute("aria-hidden", "true");
+        });
+        activePopupSheet = null;
+        selectedFood = null;
+        editEntryId = null;
+      }
+
+      function renderSearchResults(items) {
+        filteredFoods = items;
+
+        if (!items.length) {
+          searchResults.innerHTML =
+            '<div class="empty-state">No custom food available...</div>';
+          return;
+        }
+
+        searchResults.innerHTML = items
+          .map(
+            (food, index) => `
+              <button class="result-btn" type="button" data-select-index="${index}">
+                <span>${food.name}</span>
+                <span>${food.calorie} kcal</span>
+              </button>
+            `,
+          )
+          .join("");
+      }
+
+      function filterFoods() {
+        const query = searchInput.value.trim().toLowerCase();
+        const items = query
+          ? foodLibrary.filter((food) =>
+              food.name.toLowerCase().includes(query),
+            )
+          : foodLibrary;
+        renderSearchResults(items);
+      }
+
+      function openSearch() {
+        selectedFood = null;
+        editEntryId = null;
+        searchInput.value = "";
+        customInput.value = "";
+        renderSearchResults(foodLibrary);
+        openLogSheet();
+        openSheet(searchSheet);
+      }
+
+      function openDetail(food, editingId = null) {
+        selectedFood = { ...food };
+        editEntryId = editingId;
+
+        detailTitle.textContent = food.name;
+        inputs.calorie.value = food.calorie ?? 0;
+        inputs.protein.value = food.protein ?? 0;
+        inputs.sugar.value = food.sugar ?? 0;
+        inputs.sodium.value = food.sodium ?? 0;
+        inputs.fat.value = food.fat ?? 0;
+        inputs.fiber.value = food.fiber ?? 0;
+        inputs.servingSize.value = food.servingSize ?? "1 serving";
+        inputs.grams.value = food.grams ?? 1;
+        inputs.servings.value = food.servings ?? 1;
+        saveDetailBtn.textContent = editingId ? "save food" : "log food";
+        updateKcalPreview();
+        openSheet(detailSheet);
+      }
+
+      function updateKcalPreview() {
+        const calories = Number(inputs.calorie.value) || 0;
+        const servings = Number(inputs.servings.value) || 0;
+        kcalPreview.textContent = `${calories * servings} kcal`;
+      }
+
+      function saveSearchSelection() {
+        if (selectedFood) {
+          openDetail({ ...selectedFood, servings: 1 });
+          return;
+        }
+
+        const customName =
+          customInput.value.trim() || searchInput.value.trim() || "Custom food";
+        openDetail(
+          {
+            name: customName,
+            grams: 1,
+            calorie: 0,
+            protein: 0,
+            sugar: 0,
+            sodium: 0,
+            fat: 0,
+            fiber: 0,
+            servingSize: "1 serving",
+            servings: 1,
+          },
+          null,
+        );
+      }
+
+      function saveDetail() {
+        const payload = {
+          id: editEntryId ?? Date.now(),
+          name: detailTitle.textContent.trim(),
+          grams: Math.max(1, Number(inputs.grams.value) || 1),
+          calorie: Number(inputs.calorie.value) || 0,
+          protein: Number(inputs.protein.value) || 0,
+          sugar: Number(inputs.sugar.value) || 0,
+          sodium: Number(inputs.sodium.value) || 0,
+          fat: Number(inputs.fat.value) || 0,
+          fiber: Number(inputs.fiber.value) || 0,
+          servingSize: inputs.servingSize.value.trim() || "1 serving",
+          servings: Math.max(1, Number(inputs.servings.value) || 1),
+        };
+
+        const activeEntries = getCurrentEntries();
+
+        if (editEntryId) {
+          dailyLogs[currentDateKey] = activeEntries.map((entry) =>
+            entry.id === editEntryId ? payload : entry,
+          );
+        } else {
+          dailyLogs[currentDateKey] = [...activeEntries, payload];
+        }
+
+        closeSheets();
+        renderEntries();
+        openLogSheet();
+      }
+
+      function closeMenu() {
+        activeMenuId = null;
+        renderEntries();
+      }
+
+      document
+        .getElementById("openSearchSheetBottom")
+        .addEventListener("click", openSearch);
+      document
+        .getElementById("cancelSearch")
+        .addEventListener("click", closeSheets);
+      document
+        .getElementById("cancelDetail")
+        .addEventListener("click", closeSheets);
+      document
+        .getElementById("saveSearch")
+        .addEventListener("click", saveSearchSelection);
+      document
+        .getElementById("saveDetail")
+        .addEventListener("click", saveDetail);
+      searchSheet
+        .querySelector(".sheet-handle-row")
+        .addEventListener("click", closeSheets);
+      detailSheet
+        .querySelector(".sheet-handle-row")
+        .addEventListener("click", closeSheets);
+      logSheetHandle.addEventListener("click", () => {
+        if (logSheetDragActive || logSheetSuppressClick) {
+          logSheetSuppressClick = false;
+          return;
+        }
+
+        if (logSheetOpen) {
+          closeLogSheet();
+        } else {
+          openLogSheet();
+        }
+      });
+      overlayBackdrop.addEventListener("click", closeSheets);
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && activePopupSheet) {
+          closeSheets();
+        }
+      });
+      searchInput.addEventListener("input", filterFoods);
+      customInput.addEventListener("input", () => {
+        selectedFood = null;
+      });
+
+      Object.values(inputs).forEach((input) => {
+        input.addEventListener("input", updateKcalPreview);
+      });
+
+      searchResults.addEventListener("click", (event) => {
+        const option = event.target.closest("[data-select-index]");
+        if (!option) {
+          return;
+        }
+
+        selectedFood =
+          filteredFoods[Number(option.dataset.selectIndex)] ?? null;
+        if (selectedFood) {
+          customInput.value = selectedFood.name;
+          openDetail({ ...selectedFood, servings: 1 });
+        }
+      });
+
+      entriesEl.addEventListener("click", (event) => {
+        const menuButton = event.target.closest("[data-menu-id]");
+        const editButton = event.target.closest("[data-edit-id]");
+        const deleteButton = event.target.closest("[data-delete-id]");
+
+        if (menuButton) {
+          const nextId = Number(menuButton.dataset.menuId);
+          activeMenuId = activeMenuId === nextId ? null : nextId;
+          renderEntries();
+          return;
+        }
+
+        if (editButton) {
+          const entry = getCurrentEntries().find(
+            (item) => item.id === Number(editButton.dataset.editId),
+          );
+          if (entry) {
+            openDetail(entry, entry.id);
+          }
+          return;
+        }
+
+        if (deleteButton) {
+          dailyLogs[currentDateKey] = getCurrentEntries().filter(
+            (item) => item.id !== Number(deleteButton.dataset.deleteId),
+          );
+          closeMenu();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (
+          activeMenuId &&
+          !event.target.closest(".context-menu") &&
+          !event.target.closest("[data-menu-id]")
+        ) {
+          closeMenu();
+        }
+      });
+
+      dayPills.forEach((pill) => {
+        pill.addEventListener("click", () => {
+          dayPills.forEach((item) => item.classList.remove("active"));
+          pill.classList.add("active");
+          currentDateKey = pill
+            .querySelector("span:last-child")
+            .textContent.trim();
+          activeMenuId = null;
+          renderEntries();
+        });
+      });
+
+      logSheetHandle.addEventListener("mousedown", (event) => {
+        logSheetDragActive = true;
+        logSheetDragStartY = event.clientY;
+        logSheetDragStartH = logSheet.offsetHeight;
+        logSheet.style.transition = "none";
+        event.preventDefault();
+      });
+
+      logSheetHandle.addEventListener(
+        "touchstart",
+        (event) => {
+          logSheetDragActive = true;
+          logSheetDragStartY = event.touches[0].clientY;
+          logSheetDragStartH = logSheet.offsetHeight;
+          logSheet.style.transition = "none";
+        },
+        { passive: true },
+      );
+
+      document.addEventListener("mousemove", (event) => {
+        if (!logSheetDragActive) {
+          return;
+        }
+
+        const deltaY = logSheetDragStartY - event.clientY;
+        const nextHeight = Math.max(
+          logSheetHandleHeight,
+          Math.min(logSheetOpenHeight, logSheetDragStartH + deltaY),
+        );
+        logSheet.style.height = `${nextHeight}px`;
+      });
+
+      document.addEventListener(
+        "touchmove",
+        (event) => {
+          if (!logSheetDragActive) {
+            return;
+          }
+
+          const deltaY = logSheetDragStartY - event.touches[0].clientY;
+          const nextHeight = Math.max(
+            logSheetHandleHeight,
+            Math.min(logSheetOpenHeight, logSheetDragStartH + deltaY),
+          );
+          logSheet.style.height = `${nextHeight}px`;
+        },
+        { passive: true },
+      );
+
+      function endLogSheetDrag(endY) {
+        if (!logSheetDragActive) {
+          return;
+        }
+
+        const deltaY = logSheetDragStartY - endY;
+        const currentHeight = logSheet.offsetHeight;
+
+        logSheetDragActive = false;
+        logSheet.style.transition = "";
+        logSheetSuppressClick = Math.abs(deltaY) > 6;
+
+        if (
+          currentHeight > (logSheetHandleHeight + logSheetOpenHeight) / 2 ||
+          deltaY > 60
+        ) {
+          openLogSheet();
+        } else {
+          closeLogSheet();
+        }
+      }
+
+      document.addEventListener("mouseup", (event) => {
+        endLogSheetDrag(event.clientY);
+      });
+
+      document.addEventListener("touchend", (event) => {
+        endLogSheetDrag(event.changedTouches[0].clientY);
+      });
+
+      renderEntries();
+      syncLogSheet();
+      window.addEventListener("resize", () => syncLogSheet(logSheetOpen));
+
       // Back button
       document
         .getElementById("backArrow")
