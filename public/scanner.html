@@ -109,6 +109,7 @@
         id="ai-verdict-box" 
         style="display: none; background: rgba(255, 60, 60, 0.15); border-left: 4px solid #ff3c3c; padding: 12px; margin: 10px 20px; border-radius: 8px; font-size: 0.85em; color: #fff; line-height: 1.4;"
       >
+      <input type="file" id="label-camera-input" accept="image/*" capture="environment" style="display: none;" onchange="processLabelImage(event)">
         <strong style="color: #ff3c3c; display: block; margin-bottom: 4px;">🤖 BiteWise AI Analysis:</strong> 
         <span id="ai-verdict-text">Analyzing ingredients...</span>
       </div>
@@ -177,7 +178,7 @@
 
 <script>
 // API KEY HERE 
-const GEMINI_API_KEY = "AIzaSyBDAqGzh2z8tKyaAgbmE9GSZ-qIt9CYfr4";
+const GEMINI_API_KEY = "API_KEY_HERE";
 
 // 1. Initialize the Barcode Scanner
 const html5QrCode = new Html5Qrcode("camera-feed");
@@ -433,7 +434,13 @@ async function analyzeIngredientsWithAI(foodName, ingredients) {
     
     verdictBox.style.borderLeftColor = "#ff3c3c"; 
     verdictBox.style.background = "rgba(255, 60, 60, 0.15)";
-    verdictText.innerHTML = aiVerdict.replace(/\n/g, "<br>");
+    // If ingredients were missing, add a button to launch the camera!
+    if (ingredients === "Not found in database") {
+      verdictText.innerHTML = aiVerdict.replace(/\n/g, "<br>") + 
+      `<br><br><button onclick="document.getElementById('label-camera-input').click()" style="background: #E1FF00; color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">📷 Scan Ingredient Label</button>`;
+    } else {
+      verdictText.innerHTML = aiVerdict.replace(/\n/g, "<br>");
+    }
 
   } catch (error) {
     // This safely catches the error without crashing the rest of your app!
@@ -443,6 +450,84 @@ async function analyzeIngredientsWithAI(foodName, ingredients) {
     
     const verdictBox = document.getElementById("ai-verdict-box");
     verdictBox.style.borderLeftColor = "#ffaa00"; // Orange error color
+  }
+}
+
+// =====================
+// MULTIMODAL VISION: The Hidden Decoder
+// =====================
+function processLabelImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Read the image file so we can send it to Gemini
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    // Gemini needs just the raw data string, so we split off the prefix
+    const base64String = e.target.result.split(',')[1];
+    const mimeType = file.type;
+    const foodName = document.getElementById("food-name").textContent;
+
+    analyzeImageWithAI(foodName, base64String, mimeType);
+  };
+  reader.readAsDataURL(file);
+}
+
+async function analyzeImageWithAI(foodName, base64String, mimeType) {
+  const userProfile = {
+    condition: "Type 2 Diabetes",
+    allergy: "Peanuts",
+    preference: "Halal"
+  };
+
+  const promptText = `
+    You are an expert nutritionist. Look at this image of the ingredient label for ${foodName}.
+    User Profile: Has ${userProfile.condition}, allergic to ${userProfile.allergy}, prefers ${userProfile.preference}.
+    
+    Task:
+    1. Extract and read the ingredients from the image.
+    2. Act as a 'Hidden Decoder': explain any complex scientific names, hidden sugars, or strange preservatives.
+    3. Flag any dangers for the user's condition or allergies based on what you read.
+    Keep the response very short, maximum 3 bullet points.
+  `;
+
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  
+  try {
+    const verdictBox = document.getElementById("ai-verdict-box");
+    const verdictText = document.getElementById("ai-verdict-text");
+    
+    verdictBox.style.borderLeftColor = "#E1FF00"; 
+    verdictBox.style.background = "rgba(225, 255, 0, 0.1)";
+    verdictText.innerHTML = "<em>👀 Reading the label and decoding scientific names...</em>";
+    
+    // Notice how we send BOTH text and image data (inlineData) to Gemini 2.5!
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: promptText },
+            { inlineData: { mimeType: mimeType, data: base64String } }
+          ]
+        }]
+      })
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) throw new Error(data.error?.message || "Image analysis failed.");
+
+    const aiVerdict = data.candidates[0].content.parts[0].text;
+    
+    verdictBox.style.borderLeftColor = "#ff3c3c"; 
+    verdictBox.style.background = "rgba(255, 60, 60, 0.15)";
+    verdictText.innerHTML = aiVerdict.replace(/\n/g, "<br>");
+
+  } catch (error) {
+    console.error("Gemini Vision Error:", error);
+    document.getElementById("ai-verdict-text").innerHTML = `⚠️ Error reading image: ${error.message}`;
   }
 }
 </script>
