@@ -9,40 +9,9 @@ Install dependencies:
 npm install
 ```
 
-Start a local server from the `public` folder:
+Start a local server.
 
 ```bash
-python3 -m http.server 5500 --directory public
+python3 -m http.server 5500 
 ```
 
-Open:
-
-```text
-http://localhost:5500
-```
-
-Do not use `file://` for Firebase auth.
-
-## Auth setup
-
-Google login and email/password auth use Firebase.
-
-Make sure in Firebase Console:
-
-- Email/Password is enabled
-- Google provider is enabled
-- `localhost` is added to Authorized Domains
-
-## Push to GitHub
-
-Commit these:
-
-- `public/`
-- `img/`
-- `README.md`
-- `package.json`
-- `package-lock.json`
-
-Do not commit:
-
-- `node_modules/`
